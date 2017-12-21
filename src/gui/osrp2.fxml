@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+
+<VBox prefHeight="567.0" prefWidth="902.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.MainController">
+  <children>
+    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="444.0" prefWidth="640.0" VBox.vgrow="ALWAYS">
+      <children>
+        <Label alignment="CENTER" layoutX="195.0" layoutY="14.0" style="&#10;" text="Router Configuration " textAlignment="CENTER" wrapText="false">
+          <font>
+            <Font size="24.0" />
+          </font>
+        </Label>
+            <TitledPane animated="false" collapsible="false" layoutX="18.0" layoutY="54.0" prefHeight="195.0" prefWidth="338.0" text="Router Details ">
+              <content>
+                <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="121.0" minWidth="0.0" prefHeight="168.0" prefWidth="320.0">
+                     <children>
+                        <Label layoutX="6.0" layoutY="6.0" prefHeight="21.0" prefWidth="65.0" text="Status">
+                           <font>
+                              <Font name="DejaVu Serif Bold" size="13.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="6.0" layoutY="34.0" prefHeight="21.0" prefWidth="65.0" text="Uptime">
+                           <font>
+                              <Font name="DejaVu Serif Bold" size="13.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="6.0" layoutY="61.0" prefHeight="21.0" prefWidth="65.0" text="IP">
+                           <font>
+                              <Font name="DejaVu Serif Bold" size="13.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="3.0" layoutY="86.0" prefHeight="21.0" prefWidth="138.0" text="Available Memory">
+                           <font>
+                              <Font name="DejaVu Serif Bold" size="13.0" />
+                           </font>
+                        </Label>
+                          <Label layoutX="2.0" layoutY="120.0" prefHeight="21.0" prefWidth="165.0" text="Memory Consumption">
+                           <font>
+                              <Font name="DejaVu Serif Bold" size="13.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="STATUS" layoutX="170.0" layoutY="11.0" text="--" textFill="#752626">
+                           <font>
+                              <Font name="DejaVu Sans Bold" size="14.0" />
+                           </font></Label>
+                        <Label fx:id="UP_TIME" layoutX="169.0" layoutY="39.0" text="--" textFill="#752626">
+                           <font>
+                              <Font name="DejaVu Sans Bold" size="14.0" />
+                           </font></Label>
+                        <Label fx:id="IP" layoutX="169.0" layoutY="66.0" text="--" textFill="#752626">
+                           <font>
+                              <Font name="DejaVu Sans Bold" size="14.0" />
+                           </font></Label>
+                        <Label fx:id="MAC" layoutX="169.0" layoutY="122.0" text="--" textFill="#752626">
+                           <font>
+                              <Font name="DejaVu Sans Bold" size="14.0" />
+                           </font></Label>
+                        <Label fx:id="RAM" layoutX="169.0" layoutY="91.0" text="--" textFill="#752626">
+                           <font>
+                              <Font name="DejaVu Sans Bold" size="14.0" />
+                           </font></Label>
+                        <Label layoutX="3.0" layoutY="100.0" prefHeight="21.0" prefWidth="138.0" text="(In MBs)">
+                           <font>
+                              <Font size="12.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="4.0" layoutY="134.0" prefHeight="21.0" prefWidth="138.0" text="(In MBs)">
+                           <font>
+                              <Font size="12.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </AnchorPane>
+              </content>
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+            </TitledPane>
+            <TextArea fx:id="cmd" editable="false" layoutX="17.0" layoutY="259.0" prefHeight="300.0" prefWidth="590.0" style="-fx-control-inner-background:#000000; -fx-font-family: Consolas; -fx-highlight-fill: #00ff00; -fx-highlight-text-fill: White; -fx-text-fill: White;" />
+            <TitledPane animated="false" collapsible="false" layoutX="360.0" layoutY="55.0" prefHeight="195.0" prefWidth="245.0" text="Connection">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="173.0" prefWidth="238.0">
+                     <children>
+                        <Label layoutX="33.0" layoutY="13.0" text="Connect To">
+                           <font>
+                              <Font size="26.0" />
+                           </font>
+                        </Label>
+                        <TextField fx:id="ipInput" layoutX="11.0" layoutY="52.0" prefHeight="38.0" prefWidth="210.0" promptText="Ip Of Router" />
+                        <Button layoutX="51.0" layoutY="101.0" mnemonicParsing="false" onAction="#directConnection" prefHeight="38.0" prefWidth="107.0" text="CONNECT" />
+                     </children>
+                  </AnchorPane>
+               </content>
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+            </TitledPane>
+            <Button layoutX="467.0" layoutY="8.0" mnemonicParsing="false" onAction="#setDefaulters" prefHeight="42.0" prefWidth="51.0" text="On" textAlignment="CENTER" textFill="#1ebc3b">
+               <effect>
+                  <ColorAdjust />
+               </effect>
+               <rotationAxis>
+                  <Point3D x="100.0" y="100.0" z="200.0" />
+               </rotationAxis>
+               <font>
+                  <Font name="System Bold" size="17.0" />
+               </font>
+            </Button>
+            <Separator layoutX="619.0" layoutY="4.0" orientation="VERTICAL" prefHeight="558.0" prefWidth="8.0" />
+            <Label alignment="CENTER" layoutX="648.0" layoutY="16.0" style="&#10;" text="Host Configuration" textAlignment="CENTER" wrapText="false">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Label>
+            <TextArea fx:id="hostCMD" editable="false" layoutX="626.0" layoutY="259.0" prefHeight="300.0" prefWidth="266.0" style="-fx-control-inner-background:#000000; -fx-font-family: Consolas; -fx-highlight-fill: #00ff00; -fx-highlight-text-fill: White; -fx-text-fill: White;" />
+            <TitledPane animated="false" collapsible="false" layoutX="639.0" layoutY="57.0" prefHeight="195.0" prefWidth="245.0" text="Host Connection">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="173.0" prefWidth="238.0">
+                     <children>
+                        <Button layoutX="73.0" layoutY="94.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="107.0" text="Send !" />
+                        <Label layoutX="49.0" layoutY="13.0" text="Destination">
+                           <font>
+                              <Font size="24.0" />
+                           </font>
+                        </Label>
+                        <TextField fx:id="destinationIP" layoutX="16.0" layoutY="49.0" prefHeight="36.0" prefWidth="210.0" promptText="Destination Host IP" />
+                     </children>
+                  </AnchorPane>
+               </content>
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+            </TitledPane>
+      </children>
+    </AnchorPane>
+  </children>
+</VBox>
