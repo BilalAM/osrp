@@ -5,11 +5,12 @@ import java.io.ObjectInputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.Callable;
-
 
 public class Router {
 
@@ -18,9 +19,9 @@ public class Router {
 	private static List<Socket> historyOfRouterConnections = new ArrayList<>();
 	private ServerSocket selfServer;
 	private int PORT;
-	private static Scanner scanner = new Scanner(System.in);
-	public static StringBuilder builder = new StringBuilder();
-
+	private StringBuilder builder = new StringBuilder();
+	private StringBuilder directConnectionBuilder = new StringBuilder();
+	private StringBuilder listenConnectionBuilder = new StringBuilder();
 
 	public Router(String name, int port) {
 		this.PORT = port;
@@ -29,7 +30,7 @@ public class Router {
 			Router.name = name;
 			routerTable = new Table(selfServer.getInetAddress());
 			System.out.println("Empty Router created by name.... " + name);
-			//builder.append("router created");
+			// builder.append("router created");
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("WARNING*** , Router " + name + " cannot be created at Port " + port);
@@ -37,62 +38,53 @@ public class Router {
 	}
 
 	/**
+	 * <b>Listen Connection</b> <br/>
 	 * listens for active connection from other router and add that entry into table
 	 * , also 'saves' the connections in a list
+	 * </br/>
+	 * <p>The standard sysouts are for <b>testing purposes only</b></p>
 	 */
 	public String initialize() {
 
 		Socket otherRouter = null;
 		try {
+			listenConnectionBuilder.append("\n");
 
-			builder.append("\n");
 			// System.out.println("waiting...");
-				
-				
-				otherRouter = selfServer.accept();
-				builder.append("Router Connection Found");
-				builder.append("\n");
-				if (checkExistingConnection(otherRouter)) {
-					System.out.println("Connection already exists....");
 
-					builder.append("connection exists");
-					builder.append("\n");
-				} else {
-					
-					// if(checkTypeOfConnection().equals("R"){
-					//		processRouter();
-					//      }else{
-					//		processPacket();
-					//	}
-					/*
-					try(ObjectInputStream inputPacket = new ObjectInputStream(otherRouter.getInputStream())){
-						Packet packet = (Packet)inputPacket.readObject();
-						
-					}
-					*/
-					builder.append("\n");
-					System.out.println("Router connection found...");
-					builder.append("\n");
-					System.out.println("Details  :- ");
-					builder.append("Details :- ");
-					builder.append("\n");
-					builder.append("-Address : " + otherRouter.getInetAddress());
-					System.out.println("-Address : " + otherRouter.getInetAddress());
-					builder.append("\n");
-					builder.append("-Port : " + otherRouter.getPort());
-					System.out.println("-Port    :" + otherRouter.getPort());
-					builder.append("\n");
-					System.out.println("adding new entry in table....");
-					builder.append("Adding new Entry in the table..");
-					builder.append("\n");
-					routerTable.addNewEntry(otherRouter.getInetAddress(), otherRouter.getInetAddress(), 1);
-					historyOfRouterConnections.add(otherRouter);
-					routerTable.displayTable();
-					builder.append(routerTable.builder.toString());
-					builder.append("\n");
-				}
-				otherRouter.close();
-			
+			otherRouter = selfServer.accept();
+			listenConnectionBuilder.append("======================================== \n ");
+			listenConnectionBuilder.append("*** ROUTER CONNECTION FOUND ! *** \n");
+
+			if (checkExistingConnection(otherRouter)) {
+				System.out.println("Connection already exists....");
+
+				listenConnectionBuilder.append("*** CONNECTION ALREADY EXISTS ! , RESUMING LISTENING ! *** \n");
+				listenConnectionBuilder.append("======================================== \n ");
+			} else {
+
+				System.out.println("Router connection found...");
+				listenConnectionBuilder.append("* DETAILS OF CONNECTION * \n");
+				listenConnectionBuilder.append("-ADDRESS 			: " + otherRouter.getInetAddress() + "\n");
+				listenConnectionBuilder.append("-PORT 	 			: " + otherRouter.getPort() + "\n");
+				listenConnectionBuilder.append("-TIME OF CONNECTION : "
+						+ LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")) + "\n");
+				listenConnectionBuilder.append("* ADDING ENTRY IN TABLE * \n");
+				listenConnectionBuilder.append("======================================== \n ");
+				
+				// populate the history lists
+				routerTable.addNewEntry(otherRouter.getInetAddress(), otherRouter.getInetAddress(), 1);
+				historyOfRouterConnections.add(otherRouter);
+
+				listenConnectionBuilder.append(routerTable.displayTable() + "\n");
+
+				System.out.println("Details  :- ");
+				System.out.println("-Address : " + otherRouter.getInetAddress());
+				System.out.println("-Port    :" + otherRouter.getPort());
+				System.out.println("adding new entry in table....");
+				routerTable.displayTable();
+			}
+			otherRouter.close();
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -103,11 +95,44 @@ public class Router {
 				e.printStackTrace();
 			}
 		}
-		return builder.toString();
+		return listenConnectionBuilder.toString();
 	}
 
-	public String getCMD() {
-		return builder.toString();
+	/**
+	 * <b>Direct Connection</b> <br/>
+	 * tries to connect to a seperate router and returns true if success
+	 */
+	public boolean connectToRouter(String ip) {
+		boolean checkFlag;
+		// System.out.println("Enter IP Address Of Router To Connect");
+		// String ip = scanner.nextLine();
+		Socket socket = null;
+		try {
+			socket = new Socket(InetAddress.getByName(ip), PORT);
+			if (checkExistingConnection(socket)) {
+				builder.append("\n");
+				builder.append("connection already exists \n ");
+				System.out.println("Connection already exists....");
+				checkFlag = false;
+				socket.close();
+				return checkFlag;
+			} else {
+				// socket = new Socket(InetAddress.getByName(ip), PORT);
+				builder.append("\n");
+				builder.append("Successfully connected to a router \n ");
+				System.out.println("Connected to a router " + ip);
+				// add this to the history
+				historyOfRouterConnections.add(socket);
+				routerTable.addNewEntry(socket.getInetAddress(), socket.getInetAddress(), 1);
+				checkFlag = true;
+				return checkFlag;
+			}
+		} catch (Exception e) {
+			System.out.println("cannot connect , Router or Host is currently unreachable or not connected");
+
+			checkFlag = false;
+		}
+		return checkFlag;
 	}
 
 	/**
@@ -123,98 +148,6 @@ public class Router {
 			}
 		}
 		return false;
-	}
-
-	/**
-	 * tries to connect to a seperate router
-	 */
-	@Deprecated
-	public void connectToRouter() {
-		System.out.println("Enter IP Address Of Router To Connect");
-		String ip = scanner.nextLine();
-		Socket socket = null;
-		try {
-			socket = new Socket(InetAddress.getByName(ip),PORT);
-			if (checkExistingConnection(socket)) {
-				builder.append("\n");
-				builder.append("connection already exists");
-				System.out.println("Connection already exists....");
-				socket.close();
-			} else {
-				socket = new Socket(InetAddress.getByName(ip), PORT);
-				builder.append("\n");
-				builder.append("Successfully connected to a router");
-				System.out.println("Connected to a router " + ip);
-				// add this to the history
-				historyOfRouterConnections.add(socket);
-				routerTable.addNewEntry(socket.getInetAddress(), socket.getInetAddress(), 1);
-			}
-		} catch (Exception e) {
-			System.out.println("cannot connect ");
-			e.printStackTrace();
-		}
-	}
-	
-	
-	
-	/**
-	 * tries to connect to a seperate router and returns true if success
-	 */
-	public boolean connectToRouter(String ip) {
-		boolean checkFlag;
-		//System.out.println("Enter IP Address Of Router To Connect");
-		//String ip = scanner.nextLine();
-		Socket socket = null;
-		try {
-			socket = new  Socket(InetAddress.getByName(ip), PORT);
-			if (checkExistingConnection(socket)) {
-				builder.append("\n");
-				builder.append("connection already exists \n ");
-				System.out.println("Connection already exists....");
-				checkFlag = false;
-				socket.close();
-				return checkFlag;
-			} else {
-				//socket = new Socket(InetAddress.getByName(ip), PORT);
-				builder.append("\n");
-				builder.append("Successfully connected to a router \n ");
-				System.out.println("Connected to a router " + ip);
-				// add this to the history
-				historyOfRouterConnections.add(socket);
-				routerTable.addNewEntry(socket.getInetAddress(), socket.getInetAddress(), 1);
-				checkFlag = true;
-				return checkFlag;
-			}
-		} catch (Exception e) {
-			System.out.println("cannot connect , Router or Host is currently unreachable or not connected");
-		
-			checkFlag = false;
-		}
-		return checkFlag;
-	}
-	public void initiateProcess() {
-		Callable<Void> process1 = (() -> {
-			initialize();
-			return null;
-		});
-		Callable<Void> process2 = (() -> {
-			connectToRouter();
-			return null;
-		});
-		List<Callable<Void>> list = new ArrayList<>();
-		list.add(process1);
-		list.add(process2);
-
-		try {
-			while (true) {
-				connectToRouter();
-				initialize();
-				// connectToRouter();
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 
 	/**
@@ -240,6 +173,31 @@ public class Router {
 	 * 
 	 * 
 	 */
+
+	private void constructListenConnectionBuilder(Router selfRouter) {
+
+	}
+
+	// GETTERS
+	public String getCMD() {
+		return builder.toString();
+	}
+
+	public String getBuilder() {
+		return builder.toString();
+	}
+
+	public String getDirectConnectionBuilder() {
+		return directConnectionBuilder.toString();
+	}
+
+	public String getListenConnectionBuilder() {
+		return listenConnectionBuilder.toString();
+	}
+
+	public List<Socket> getHistoryOfConnections() {
+		return Router.historyOfRouterConnections;
+	}
 
 	public static void main(String args[]) {
 		// Router router = new Router("bilal", 1999);
