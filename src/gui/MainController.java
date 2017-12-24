@@ -19,6 +19,7 @@ import javafx.util.Duration;
 import network.Router;
 import gui.utils.GUIUtils;
 import network.Host;
+
 public class MainController {
 
 	Router selfRouter;
@@ -35,7 +36,6 @@ public class MainController {
 	@FXML
 	private Label UP_TIME = new Label();
 
-	
 	// it is actually the memory consumption of JVM
 	@FXML
 	private Label MAC = new Label();
@@ -58,13 +58,12 @@ public class MainController {
 	@FXML
 	private TextField ipInput = new TextField();
 
-	
 	@FXML
 	private TextField destinationIP = new TextField();
-	
+
 	@FXML
-	private TextArea hostCMD = new TextArea();
-	
+	private TextArea ripCMD = new TextArea();
+
 	@FXML
 	private Button button = new Button();
 
@@ -79,9 +78,14 @@ public class MainController {
 
 	@FXML
 	private void hostConnect() {
-		
+
 	}
 	
+	@FXML
+	private void ripSimulation() {
+		ripCMD.appendText(": STARTING RIP SIMULATION ! \n " );
+		ripCMD.appendText(": RECIEVING TABLES FROM DIRECT CONNECTION ... ....  \n ");
+	}
 	
 	@FXML
 	private void directConnection() {
@@ -121,12 +125,8 @@ public class MainController {
 		clock.play();
 
 		selfRouter = new Router(NAME.getText(), 1999);
-		//selfHost =  new Host("Bilal", destinationIP.getText());
-		
-		hostCMD.appendText(": Initializing HOST " + Host.name + "  and connecting to ROUTER " + NAME.getText() + " \n");
-		hostCMD.appendText(": Waiting For Destination IP ....  \n ");
-		
-		
+		// selfHost = new Host("Bilal", destinationIP.getText());
+
 		cmd.appendText(": initializing ROUTER....");
 		cmd.appendText(": setting default parameters..... \n ");
 		cmd.appendText(": getting network stats... \n ");
@@ -161,7 +161,7 @@ public class MainController {
 
 					@Override
 					public void run() {
-						cmd.setText(cmdTextString);
+						cmd.setText(cmdTextString + "\n");
 
 					}
 				});
@@ -171,4 +171,7 @@ public class MainController {
 		}
 	}
 
+	
+	
+	
 }
