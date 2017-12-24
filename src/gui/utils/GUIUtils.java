@@ -14,7 +14,7 @@ public class GUIUtils {
 
 	// testing
 	public static void main(String[] args) {
-		GUIUtils.getPrivateIp("wlo1");
+		System.out.println(GUIUtils.getPrivateIp("wlo1"));
 	}
 
 	public static String getPrivateIp(String interfaceName) {
@@ -31,7 +31,7 @@ public class GUIUtils {
 						if (address.getHostAddress().contains(":")) {
 							continue;
 						} else {
-							ip = address.getHostName();
+							ip = address.getHostAddress();
 						}
 					}
 				}
