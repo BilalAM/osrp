@@ -1,10 +1,5 @@
 package gui;
 
-import java.net.URL;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ResourceBundle;
-
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -16,23 +11,35 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.util.Duration;
 
-import network.Router;
 import gui.utils.GUIUtils;
 import network.Host;
+import network.Router;
+
+import java.net.URL;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ResourceBundle;
 
 public class MainController {
 
-	Router selfRouter;
+	private Router selfRouter;
 	Host selfHost;
 	/**
 	 * Router info Labels , all have default values..
 	 */
+	// testLabel
+	@FXML
+	private final Label testLabel = new Label();
+
 	@FXML
 	private Label NAME = new Label();
+
 	@FXML
 	private Label STATUS = new Label();
+
 	@FXML
 	private Label IP = new Label();
+
 	@FXML
 	private Label UP_TIME = new Label();
 
@@ -68,7 +75,6 @@ public class MainController {
 	private Button button = new Button();
 
 	public MainController() {
-
 	}
 
 	@FXML
@@ -77,23 +83,20 @@ public class MainController {
 	}
 
 	@FXML
-	private void hostConnect() {
-
-	}
-	
-	@FXML
 	private void ripSimulation() {
-		ripCMD.appendText(": STARTING RIP SIMULATION ! \n " );
+		ripCMD.appendText(": STARTING RIP SIMULATION ! \n ");
 		ripCMD.appendText(": RECIEVING TABLES FROM DIRECT CONNECTION ... ....  \n ");
+		//testLabel.setText("good");
+		System.out.println(testLabel.getText());
 	}
-	
+
 	@FXML
 	private void directConnection() {
 
 		if (ipInput.getText().equals(" ")) {
 			cmd.setText("INCORRECT FORMAT");
 		}
-		if (selfRouter.connectToRouter(ipInput.getText()) == true) {
+		if (selfRouter.connectToRouter(ipInput.getText())) {
 			cmd.appendText("\n");
 			cmd.appendText(Router.routerTable.displayTable());
 			cmd.appendText("\n");
@@ -109,11 +112,11 @@ public class MainController {
 	 */
 	@FXML
 	private void setDefaulters() {
-
+		//ripCMD.setText("ds");
 		STATUS.setText("ON");
 		NAME.setText("CISCO XYZ 19-A");
 		IP.setText(GUIUtils.getPrivateIp("wlo1"));
-
+		System.out.println("test");
 		Timeline clock = new Timeline(new KeyFrame(Duration.ZERO, e -> {
 			UP_TIME.setText(LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
 			RAM.setText(String.valueOf((float) (Runtime.getRuntime().freeMemory() / 1024) / 1024));
@@ -124,19 +127,19 @@ public class MainController {
 		clock.setCycleCount(Animation.INDEFINITE);
 		clock.play();
 
-		selfRouter = new Router(NAME.getText(), 1999);
+		selfRouter = new Router(NAME.getText(), 2000);
 		// selfHost = new Host("Bilal", destinationIP.getText());
 
 		cmd.appendText(": initializing ROUTER....");
 		cmd.appendText(": setting default parameters..... \n ");
-		cmd.appendText(": getting network stats... \n ");
+		cmd.appendText(": getting main.java.network stats... \n ");
 		cmd.appendText("ROUTER " + NAME.getText() + " CREATED ");
 
 		// start listening to active connections on seperate threads in the background
 		startTask();
 	}
 
-	public void startTask() {
+	private void startTask() {
 		Runnable task = new Runnable() {
 
 			@Override
@@ -147,13 +150,13 @@ public class MainController {
 		};
 		// Run the task in a background thread
 		Thread backgroundThread = new Thread(task);
-		// Terminate the running thread if the gui exits
+		// Terminate the running thread if the main.java.gui exits
 		backgroundThread.setDaemon(true);
 		// Start the thread
 		backgroundThread.start();
 	}
 
-	public void runTheTask() {
+	private void runTheTask() {
 		try {
 			while (true) {
 				final String cmdTextString = selfRouter.initialize();
@@ -171,7 +174,4 @@ public class MainController {
 		}
 	}
 
-	
-	
-	
 }
