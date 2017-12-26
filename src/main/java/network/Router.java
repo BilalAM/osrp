@@ -1,5 +1,8 @@
 package network;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
@@ -19,6 +22,7 @@ public class Router {
     private StringBuilder builder = new StringBuilder();
     private StringBuilder directConnectionBuilder = new StringBuilder();
     private StringBuilder listenConnectionBuilder = new StringBuilder();
+    private static final Logger logger = LoggerFactory.getLogger(Router.class);
 
     public Router(String name, int port) {
         this.PORT = port;
@@ -26,16 +30,16 @@ public class Router {
             selfServer = new ServerSocket(PORT);
             Router.name = name;
             routerTable = new Table(selfServer.getInetAddress());
-            System.out.println("Empty Router created by name.... " + name);
+            logger.info("Empty Router created by name.... " + name);
             // builder.append("router created");
         } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("WARNING*** , Router " + name + " cannot be created at Port " + port);
+            logger.warn("WARNING*** , Router " + name + " cannot be created at Port " + port);
+            logger.error(e.getMessage(), e);
         }
     }
 
     /**
-     * @param the new socket to check for prior existance
+     * @param toCheck new socket to check for prior existance
      * @return whether the socket already exists or not
      */
     private static boolean checkExistingConnection(Socket toCheck) {
@@ -93,21 +97,23 @@ public class Router {
 
                 listenConnectionBuilder.append(routerTable.displayTable() + "\n");
 
-                System.out.println("Details  :- ");
-                System.out.println("-Address : " + otherRouter.getInetAddress());
-                System.out.println("-Port    :" + otherRouter.getPort());
-                System.out.println("adding new entry in table....");
+                logger.trace("----------------");
+                logger.trace("Details  :- ");
+                logger.trace("-Address : " + otherRouter.getInetAddress());
+                logger.trace("-Port    :" + otherRouter.getPort());
+                logger.trace("adding new entry in table....");
+                logger.trace("----------------");
                 routerTable.displayTable();
             }
             otherRouter.close();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         } finally {
             try {
                 otherRouter.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
             }
         }
         return listenConnectionBuilder.toString();
@@ -127,7 +133,7 @@ public class Router {
             if (checkExistingConnection(socket)) {
                 builder.append("\n");
                 builder.append("connection already exists \n ");
-                System.out.println("Connection already exists....");
+                logger.debug("Connection already exists....");
                 checkFlag = false;
                 socket.close();
                 return checkFlag;
@@ -135,7 +141,7 @@ public class Router {
                 // socket = new Socket(InetAddress.getByName(ip), PORT);
                 builder.append("\n");
                 builder.append("Successfully connected to a router \n ");
-                System.out.println("Connected to a router " + ip);
+                logger.info("Connected to a router " + ip);
                 // add this to the history
                 historyOfRouterConnections.add(socket);
                 routerTable.addNewEntry(socket.getInetAddress(), socket.getInetAddress(), 1);
@@ -144,7 +150,7 @@ public class Router {
             }
         } catch (Exception e) {
 
-            System.out.println("cannot connect , Router or Host is currently unreachable or not connected");
+            logger.warn("cannot connect , Router or Host is currently unreachable or not connected");
 
             checkFlag = false;
         }
