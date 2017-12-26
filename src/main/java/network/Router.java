@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -59,7 +60,7 @@ public class Router {
     /**
      * <b>Listen Connection</b> <br/>
      * listens for active connection from other router and add that entry into table
-     * , also 'saves' the connections in a list
+     * , also 'saves' the connections in a list . <b> ALSO SENDS THE TABLE IN OUTPUT STREAM </b>
      * </br/>
      * <p>The standard sysouts are for <b>testing purposes only</b></p>
      */
@@ -94,7 +95,11 @@ public class Router {
                 // populate the history lists
                 routerTable.addNewEntry(otherRouter.getInetAddress(), otherRouter.getInetAddress(), 1);
                 historyOfRouterConnections.add(otherRouter);
-
+                
+                //encapsulate the table and send it to output stream
+                try (ObjectOutputStream tableStream = new ObjectOutputStream(otherRouter.getOutputStream())) {
+                    tableStream.writeObject(routerTable);
+                }
                 listenConnectionBuilder.append(routerTable.displayTable() + "\n");
 
                 logger.trace("----------------");
