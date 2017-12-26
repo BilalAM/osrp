@@ -30,7 +30,7 @@ public class GUIUtils {
                         if (address.getHostAddress().contains(":")) {
                             continue;
                         } else {
-                            ip = address.getHostName();
+                            ip = address.getHostAddress();
                         }
                     }
                 }
