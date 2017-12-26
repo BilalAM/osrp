@@ -3,12 +3,17 @@ package network;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Serializable;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Table {
-    InetAddress source;
+public class Table implements Serializable {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 793321061047482963L;
+	InetAddress source;
     InetAddress destination;
     InetAddress next;
     int cost;
