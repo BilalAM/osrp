@@ -10,8 +10,7 @@ import com.osrp.beans.Weight;
 public class NodeWeightUtils {
 
 
-    public static Weight getWeight(Node node) {
-        SystemMetricUtils.getSystemMetrics(node);
+    public static Weight getWeight(Node systemMetrics) {
         return Weight.FOUR;
     }
 }
