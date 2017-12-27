@@ -1,6 +1,8 @@
 package network;
 
+import java.io.ObjectInputStream;
 import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,9 +26,15 @@ public class Responder {
 	 * @return list of tables of the directly connected routers from "selfRouter"
 	 */
 	public List<Table> getTables(ServerSocket selfServer) {
+		Table table = null;
 		List<Table> tables = new ArrayList<>();
 		try {
-			
+			for(Socket connectedRouter : selfRouter.getHistoryOfConnections()) {
+				try(ObjectInputStream input = new ObjectInputStream(connectedRouter.getInputStream())){
+					table = (Table)input.readObject();
+					tables.add(table);
+				}
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

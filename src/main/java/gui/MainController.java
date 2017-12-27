@@ -87,7 +87,7 @@ public class MainController {
     @FXML
     private void ripSimulation() {
         ripCMD.appendText(": STARTING RIP SIMULATION ! \n ");
-        ripCMD.appendText(": RECIEVING TABLES FROM DIRECT CONNECTION ... ....  \n ");
+        ripCMD.appendText(": RECIEVING TABLES FROM DIRECTLY CONNECTED ROUTERS ... ....  \n ");
         //testLabel.setText("good");
         logger.debug(testLabel.getText());
     }
