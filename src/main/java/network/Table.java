@@ -12,7 +12,7 @@ public class Table implements Serializable {
     /**
 	 * 
 	 */
-	private static final long serialVersionUID = 793321061047482963L;
+	private static final long serialVersionUID =1L;
 	InetAddress source;
     InetAddress destination;
     InetAddress next;
