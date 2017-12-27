@@ -12,7 +12,10 @@ public class Table implements Serializable {
     /**
 	 * 
 	 */
-	private static final long serialVersionUID =1L;
+	private static final long serialVersionUID = 793321061047482963L;
+	/**
+	 * 
+	 */
 	InetAddress source;
     InetAddress destination;
     InetAddress next;
@@ -27,11 +30,8 @@ public class Table implements Serializable {
     public Table(InetAddress source) {
         this.source = source;
     }
-    private static final Logger logger = LoggerFactory.getLogger(Table.class);
+   // private static final Logger logger = LoggerFactory.getLogger(Table.class);
 
-    public static void main(String args[]) throws Exception {
-
-    }
 
     public void addNewEntry(InetAddress destination, InetAddress next, int cost) {
         this.destination = destination;
@@ -66,7 +66,7 @@ public class Table implements Serializable {
         return builder.toString();
     }
 
-    public class Entry {
+    public static class Entry implements Serializable {
         InetAddress destination;
         InetAddress next;
         int cost;
