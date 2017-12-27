@@ -151,9 +151,9 @@ public class Router {
                 historyOfRouterConnections.add(socket);
                 routerTable.addNewEntry(socket.getInetAddress(), socket.getInetAddress(), 1);
                 // add table to output stream
-                try (ObjectOutputStream tableStream = new ObjectOutputStream(socket.getOutputStream())) {
+                /*try (ObjectOutputStream tableStream = new ObjectOutputStream(socket.getOutputStream())) {
                     tableStream.writeObject(routerTable);
-                }
+                }*/
                 checkFlag = true;
                 return checkFlag;
             }
