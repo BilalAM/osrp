@@ -25,7 +25,7 @@ public class Responder {
 	 * @param selfServer
 	 * @return list of tables of the directly connected routers from "selfRouter"
 	 */
-	public List<Table> getTables(ServerSocket selfServer) {
+	public List<Table> getTables() {
 		Table table = null;
 		List<Table> tables = new ArrayList<>();
 		try {
