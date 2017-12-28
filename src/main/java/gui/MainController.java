@@ -12,7 +12,10 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.util.Duration;
 import network.Host;
+import network.Responder;
 import network.Router;
+import network.Table;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,9 +89,13 @@ public class MainController {
 
     @FXML
     private void ripSimulation() {
+    	Responder responder = new Responder(selfRouter);
         ripCMD.appendText(": STARTING RIP SIMULATION ! \n ");
         ripCMD.appendText(": RECIEVING TABLES FROM DIRECTLY CONNECTED ROUTERS ... ....  \n ");
         //testLabel.setText("good");
+        for(Table table : responder.getTables()) {
+        	ripCMD.appendText(table.displayTable() + " \n ");
+        }
         logger.debug(testLabel.getText());
     }
 

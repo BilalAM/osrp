@@ -30,10 +30,13 @@ public class Responder {
 		List<Table> tables = new ArrayList<>();
 		try {
 			for(Socket connectedRouter : selfRouter.getHistoryOfConnections()) {
-				try(ObjectInputStream input = new ObjectInputStream(connectedRouter.getInputStream())){
-					table = (Table)input.readObject();
-					tables.add(table);
+				if(connectedRouter.isClosed()) {
+					continue;
 				}
+				ObjectInputStream input = new ObjectInputStream(connectedRouter.getInputStream());
+				table = (Table)input.readObject();
+				tables.add(table);
+				
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
