@@ -68,7 +68,7 @@ public class Router {
 	 * </p>
 	 */
 	public String initialize() {
-
+		ObjectOutputStream tableStream ;
 		Socket otherRouter = null;
 		try {
 			listenConnectionBuilder.append("\n");
@@ -100,9 +100,11 @@ public class Router {
 				historyOfRouterConnections.add(otherRouter);
 
 				// encapsulate the table and send it to output stream
-				ObjectOutputStream tableStream = new ObjectOutputStream(otherRouter.getOutputStream());
+				tableStream = new ObjectOutputStream(otherRouter.getOutputStream());
+				tableStream.reset();
 				tableStream.writeObject(routerTable);
-				
+				tableStream.flush();
+				//tableStream.close();
 				listenConnectionBuilder.append(routerTable.displayTable() + "\n");
 
 				logger.trace("----------------");
@@ -113,13 +115,13 @@ public class Router {
 				logger.trace("----------------");
 				routerTable.displayTable();
 			}
-			//otherRouter.close();
+			// otherRouter.close();
 
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		} finally {
 			try {
-				//otherRouter.close();
+				// otherRouter.close();
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 			}
@@ -133,6 +135,7 @@ public class Router {
 	 */
 	public boolean connectToRouter(String ip) {
 		boolean checkFlag;
+		ObjectOutputStream tableStream;
 		// System.out.println("Enter IP Address Of Router To Connect");
 		// String ip = scanner.nextLine();
 		Socket socket = null;
@@ -154,8 +157,11 @@ public class Router {
 				historyOfRouterConnections.add(socket);
 				routerTable.addNewEntry(socket.getInetAddress(), socket.getInetAddress(), 1);
 				// add table to output stream
-				ObjectOutputStream tableStream = new ObjectOutputStream(socket.getOutputStream());
+				tableStream = new ObjectOutputStream(socket.getOutputStream());
+				tableStream.reset();
 				tableStream.writeObject(routerTable);
+				tableStream.flush();
+				//tableStream.close();
 				checkFlag = true;
 				return checkFlag;
 			}
@@ -166,8 +172,8 @@ public class Router {
 			checkFlag = false;
 		} finally {
 			try {
-				socket.close();
-			} catch (IOException e) {
+				// socket.close();
+			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 			}
 		}

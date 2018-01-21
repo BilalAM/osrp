@@ -1,6 +1,7 @@
 package network;
 
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -33,10 +34,11 @@ public class Responder {
 				if(connectedRouter.isClosed()) {
 					continue;
 				}
+				ObjectOutputStream output = new ObjectOutputStream(connectedRouter.getOutputStream());
 				ObjectInputStream input = new ObjectInputStream(connectedRouter.getInputStream());
 				table = (Table)input.readObject();
 				tables.add(table);
-				
+				//input.close();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

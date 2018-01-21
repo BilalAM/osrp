@@ -94,6 +94,8 @@ public class MainController {
         ripCMD.appendText(": RECIEVING TABLES FROM DIRECTLY CONNECTED ROUTERS ... ....  \n ");
         //testLabel.setText("good");
         for(Table table : responder.getTables()) {
+        	System.out.println("recieving table");
+        	System.out.println(table.displayTable() + "\n");
         	ripCMD.appendText(table.displayTable() + " \n ");
         }
         logger.debug(testLabel.getText());
