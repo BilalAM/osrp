@@ -10,7 +10,7 @@ public class Updater {
 
 
 
-    public void Update(Table toUpdate, Table forUpdate) {
+    public void Update(Table toUpdate, Table forUpdate){
         List<Table.Entry> tempEntries = new ArrayList<>();
         try {
             for (Table.Entry forEntry : forUpdate.getEntries()) {
