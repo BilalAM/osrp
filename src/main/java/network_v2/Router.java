@@ -21,6 +21,7 @@ public class Router {
         try {
             serverSocket = new ServerSocket(2000);
         }catch(Exception e){
+            System.out.println("**** ADDRESS IS ALREADY IN USE **** ");
             e.printStackTrace();
         }
     }
@@ -43,21 +44,13 @@ public class Router {
                 connectionHistory.add(otherRouter);
                 routerTable.addNewEntry(InetAddress.getByName(IPsHelper.getPrivateIp("wlo1")), otherRouter.getInetAddress(),InetAddress.getByName("0.0.0.0"),1);
                 routerTable.displayTable();
-
-
                 //add it in hashmap
                 //socketHashMap.put(otherRouter,)
-
-
-
-
             }
         }catch(Exception e){
             e.printStackTrace();
         }
     }
-
-
     // a type of client...
     public void requestConnection(String ip){
         ObjectInputStream inputStream;
@@ -109,3 +102,4 @@ public class Router {
 
 
 }
+
