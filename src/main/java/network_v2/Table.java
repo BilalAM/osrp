@@ -70,8 +70,15 @@ public class Table implements Serializable {
             this.cost = cost;
         }
 
+        @Override
+        public String toString(){
+            return "[SOURCE : " + source + "]  DESTINATION : " + destination + "]  NEXT : " + next + "]  COST : " + cost + "]";
+
+        }
+
 
     }
 
 
 }
+
