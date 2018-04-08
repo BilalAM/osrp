@@ -1,4 +1,4 @@
-    package sample;
+    package gui;
 
     import javafx.application.Platform;
     import javafx.fxml.FXML;
