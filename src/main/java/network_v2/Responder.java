@@ -17,6 +17,10 @@ public class Responder {
     public void broadcastTables(Router router){
         try{
             System.out.println("\n attempting to contact other routers to send tables too...");
+            if(isEmptyList(router)){
+
+                System.out.println("***  There is no router currently connected ***");
+            }
             for(Socket otherRouter : router.getConnectionHistory()) {
                     System.out.println("connected router found...");
                     sendTable(router,otherRouter);
@@ -24,19 +28,19 @@ public class Responder {
         }catch (Exception e){
             e.printStackTrace();
         }
-
     }
-
     /**
      * ATTEMPTS to receive one by one the inputStreams() of 'other sockets' currently in our list and readObject() the tables.
      * <br/>
      * The <b><code>( otherRouter.getInputStream().available() > 0 ) </code> </b>is to check if the stream has currently data on it ,
-     * if it has then read it else we suppose the router or socket has not sent any data as of yet
+     * if it has then read it, else we suppose the router or socket has not sent any data as of yet
      * @param router : Our router (current machine)
      */
     public void recieveTables(Router router){
         try{
-            //System.out.println("\n attempting to contact other router to receive tables...");
+            if(isEmptyList(router)){
+                System.out.println("***  There is no router currently connected ***");
+            }
             for (Socket otherRouter : router.getConnectionHistory()){
                     System.out.println("connected router found....");
                     //rough estimate to check if there is any data available......very important check !
@@ -49,7 +53,6 @@ public class Responder {
         }catch(Exception e){
             e.printStackTrace();
         }
-
     }
 
     /**
@@ -87,35 +90,8 @@ public class Responder {
         System.out.println("table sent to stream...");
     }
 
-
-
-
-
-    @Deprecated
-    public Table getTable(){
-        Table table = null;
-        try{
-            Socket otherRouter = Router.getServerSocket().accept();
-            System.out.println("connected router found....");
-            ObjectInputStream input = new ObjectInputStream(otherRouter.getInputStream());
-            System.out.println("attempting to receive table from stream");
-            table = (Table)input.readObject();
-            System.out.println("a table is received ...");
-            table.displayTable();
-            System.out.println("IS SOCKET CLOSED ? (WITH STREAM) ? " + otherRouter.isClosed());
-
-
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-        return table;
-    }
-
-
-    @Deprecated
-    private boolean isStillConnected(Socket router){
-        return (!router.isClosed());
-
+    public static boolean isEmptyList(Router router){
+            return router.getConnectionHistory().isEmpty();
     }
 
     public List<Table> getTables(){
@@ -123,3 +99,4 @@ public class Responder {
     }
 
 }
+
