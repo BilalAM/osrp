@@ -20,6 +20,8 @@ public class Main extends Application {
 
     }
 
+    // **********************************************
+    // CHANGE THE path of file TO sample.fxml
     @Override
     public void start(Stage primaryStage) {
         try {
