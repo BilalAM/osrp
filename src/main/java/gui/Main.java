@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import java.io.FileInputStream;
 
 public class Main extends Application {
-    Button initializeButton;
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
     public static void main(String[] args) {
@@ -26,7 +25,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
         try {
             FXMLLoader loader = new FXMLLoader();
-            String property = System.getProperties().getProperty("path.to.file", "/home/bilalam/Documents/git/osrp/src/main/java/gui/osrp2.fxml");
+            String property = System.getProperties().getProperty("path.to.file", "/home/bilalam/Documents/git/osrp/src/main/java/gui/sample2.fxml");
             String pathToFXML = property;
             FileInputStream fileStream = new FileInputStream(pathToFXML);
             VBox box = (VBox) loader.load(fileStream);

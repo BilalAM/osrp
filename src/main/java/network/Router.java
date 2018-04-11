@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
@@ -61,14 +62,17 @@ public class Router {
 	/**
 	 * <b>Listen Connection</b> <br/>
 	 * listens for active connection from other router and add that entry into table
-	 * , also 'saves' the connections in a list . <b> ALSO SENDS THE TABLE IN OUTPUT
+	 * , also 'saves' the connections in a list . <b> ALSO RECEIVES THE TABLE IN OUTPUT
 	 * STREAM </b> </br/>
 	 * <p>
-	 * The standard sysouts are for <b>testing purposes only</b>
+     * The standard sysouts are for <b>testing purposes only</b>
 	 * </p>
+	 * <br/>
+     * <b>WORKING</b>
+     * <p>Waits for incoming connections , if a connection is received , saves the socket in a list and also receives the table with it self</p>
 	 */
-	public String initialize() {
-		ObjectOutputStream tableStream ;
+    public String initialize(){
+        ObjectInputStream inputTable;
 		Socket otherRouter = null;
 		try {
 			listenConnectionBuilder.append("\n");
@@ -99,11 +103,13 @@ public class Router {
 				routerTable.addNewEntry(otherRouter.getInetAddress(), otherRouter.getInetAddress(), 1);
 				historyOfRouterConnections.add(otherRouter);
 
-				// encapsulate the table and send it to output stream
-				tableStream = new ObjectOutputStream(otherRouter.getOutputStream());
-				tableStream.reset();
-				tableStream.writeObject(routerTable);
-				tableStream.flush();
+				// receive the table from the input stream and print for test
+                inputTable = new ObjectInputStream(otherRouter.getInputStream());
+                Table table = (Table) inputTable.readObject();
+                System.out.println("table recieved...");
+				System.out.println(table.displayTable());
+
+
 				//tableStream.close();
 				listenConnectionBuilder.append(routerTable.displayTable() + "\n");
 
@@ -113,7 +119,8 @@ public class Router {
 				logger.trace("-Port    :" + otherRouter.getPort());
 				logger.trace("adding new entry in table....");
 				logger.trace("----------------");
-				routerTable.displayTable();
+				//print it on console
+				//routerTable.displayTable();
 			}
 			// otherRouter.close();
 
@@ -126,6 +133,7 @@ public class Router {
 				logger.error(e.getMessage(), e);
 			}
 		}
+		testHistoryList();
 		return listenConnectionBuilder.toString();
 	}
 
@@ -134,8 +142,8 @@ public class Router {
 	 * tries to connect to a seperate router and returns true if success
 	 */
 	public boolean connectToRouter(String ip) {
+		ObjectOutputStream outputObject = null;
 		boolean checkFlag;
-		ObjectOutputStream tableStream;
 		// System.out.println("Enter IP Address Of Router To Connect");
 		// String ip = scanner.nextLine();
 		Socket socket = null;
@@ -146,7 +154,7 @@ public class Router {
 				builder.append("connection already exists \n ");
 				logger.debug("Connection already exists....");
 				checkFlag = false;
-				socket.close();
+				//socket.close();
 				return checkFlag;
 			} else {
 				// socket = new Socket(InetAddress.getByName(ip), PORT);
@@ -156,13 +164,16 @@ public class Router {
 				// add this to the history
 				historyOfRouterConnections.add(socket);
 				routerTable.addNewEntry(socket.getInetAddress(), socket.getInetAddress(), 1);
-				// add table to output stream
-				tableStream = new ObjectOutputStream(socket.getOutputStream());
-				tableStream.reset();
-				tableStream.writeObject(routerTable);
-				tableStream.flush();
-				//tableStream.close();
+				
+				// encapsulate the table and send it to output stream
+				outputObject = new ObjectOutputStream(socket.getOutputStream());
+				
+				outputObject.writeUnshared(routerTable);
+				outputObject.flush();
 				checkFlag = true;
+				
+				//test history list
+				testHistoryList();
 				return checkFlag;
 			}
 		} catch (Exception e) {
@@ -180,32 +191,14 @@ public class Router {
 		return checkFlag;
 	}
 
-	/**
-	 * RouterA routerA = new RouterA("bilal router"); routerA.initialize();
-	 * routerA.connectTo(routerB); routerA.connectTo(routerC);
-	 * <p>
-	 * RouterB routerB = new RouterB("sara router"); routerB.initialize();
-	 * routerB.connectTo(routerA); routerB.connectTo(routerC);
-	 * <p>
-	 * RouterC routerC = new RouterC("asad router"); routerC.initialize();
-	 * routerC.connectTo(routerA); routerC.connectTo(routerB);
-	 * <p>
-	 * <p>
-	 * NetworkGrid gr7idA = new NetworkGrid(routerA); gridA.learnFrom(routerB)
-	 * //send B table to A gridA.learnFrom(routerC); // send C table to A
-	 * gridA.showTable();
-	 * <p>
-	 * NetworkGrid gridB = new Networkrid(routerB); gridB.learnFrom(routerC);
-	 * gridB.showTable();
-	 * <p>
-	 * Host bahria = new Host(); bahria.connectAndSend(routerA,"my destination
-	 * main.java.network"); bahria.showPath();
-	 */
-
-	private void constructListenConnectionBuilder(Router selfRouter) {
-
+	
+	private void testHistoryList() {
+		for(Socket socket : getHistoryOfConnections()) {
+			System.out.println(socket.getInetAddress() + " STATUS ( IS CLOSED? ) " + socket.isClosed());
+		}
 	}
-
+	
+	
 	// GETTERS
 	public String getCMD() {
 		return builder.toString();

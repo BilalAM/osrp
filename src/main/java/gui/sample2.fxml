@@ -9,18 +9,19 @@
 <?import javafx.scene.effect.ColorAdjust?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="686.0" prefWidth="638.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.MainController2">
+<VBox prefHeight="655.0" prefWidth="1147.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.MainController2">
     <children>
-        <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="444.0" prefWidth="640.0" VBox.vgrow="ALWAYS">
+        <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="658.0" prefWidth="1103.0" VBox.vgrow="ALWAYS">
             <children>
-                <Label alignment="CENTER" layoutX="195.0" layoutY="14.0" style="&#10;" text="Router Configuration " textAlignment="CENTER" wrapText="false">
+                <Label alignment="CENTER" layoutX="251.0" layoutY="14.0" style="&#10;" text="Router Configuration " textAlignment="CENTER" textFill="#2b1eba" wrapText="false">
                     <font>
-                        <Font size="24.0" />
+                        <Font name="Liberation Sans" size="30.0" />
                     </font>
                 </Label>
-                <TitledPane animated="false" collapsible="false" layoutX="18.0" layoutY="54.0" prefHeight="195.0" prefWidth="338.0" text="Router Details ">
+                <TitledPane animated="false" collapsible="false" layoutX="18.0" layoutY="54.0" prefHeight="195.0" prefWidth="339.0" text="Router Details ">
                     <content>
                         <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="121.0" minWidth="0.0" prefHeight="168.0" prefWidth="320.0">
                             <children>
@@ -91,18 +92,18 @@
                         <Font name="System Bold" size="13.0" />
                     </font>
                 </TitledPane>
-                <TextArea fx:id="cmd" editable="false" layoutX="17.0" layoutY="259.0" prefHeight="112.0" prefWidth="611.0" style="-fx-control-inner-background:#000000; -fx-font-family: Consolas; -fx-highlight-fill: #00ff00; -fx-highlight-text-fill: White; -fx-text-fill: White;" />
-                <TitledPane animated="false" collapsible="false" layoutX="360.0" layoutY="55.0" prefHeight="195.0" prefWidth="268.0" text="Connection">
+                <TextArea fx:id="cmd" editable="false" layoutX="19.0" layoutY="249.0" prefHeight="112.0" prefWidth="750.0" style="-fx-control-inner-background:#000000; -fx-font-family: FreeSans; -fx-highlight-fill: #00ff00; -fx-highlight-text-fill: White; -fx-text-fill: White;" />
+                <TitledPane animated="false" collapsible="false" layoutX="422.0" layoutY="54.0" prefHeight="195.0" prefWidth="347.0" text="Connection">
                     <content>
-                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="173.0" prefWidth="238.0">
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="168.0" prefWidth="351.0">
                             <children>
-                                <Label layoutX="33.0" layoutY="13.0" text="Connect To">
+                                <Label layoutX="93.0" layoutY="14.0" text="Connect To">
                                     <font>
                                         <Font size="26.0" />
                                     </font>
                                 </Label>
-                                <TextField fx:id="REQUEST_IP" layoutX="11.0" layoutY="52.0" prefHeight="38.0" prefWidth="210.0" promptText="Ip Of Router" />
-                                <Button layoutX="51.0" layoutY="101.0" mnemonicParsing="false" onAction="#requestConnection" prefHeight="38.0" prefWidth="107.0" text="CONNECT" />
+                                <TextField fx:id="REQUEST_IP" layoutX="62.0" layoutY="54.0" prefHeight="38.0" prefWidth="210.0" promptText="Ip Of Router" />
+                                <Button layoutX="114.0" layoutY="109.0" mnemonicParsing="false" onAction="#requestConnection" prefHeight="38.0" prefWidth="107.0" text="CONNECT" />
                                 <Label fx:id="testLabel" layoutX="33.0" layoutY="147.0" prefHeight="15.0" prefWidth="105.0" text="labell" />
                             </children>
                         </AnchorPane>
@@ -111,7 +112,7 @@
                         <Font name="System Bold" size="13.0" />
                     </font>
                 </TitledPane>
-                <Button layoutX="467.0" layoutY="8.0" mnemonicParsing="false" onAction="#on" prefHeight="42.0" prefWidth="51.0" text="On" textAlignment="CENTER" textFill="#1ebc3b">
+                <Button layoutX="19.0" layoutY="15.0" mnemonicParsing="false" onAction="#on" prefHeight="35.0" prefWidth="136.0" text="On" textAlignment="CENTER" textFill="#ba1e1e">
                     <effect>
                         <ColorAdjust />
                     </effect>
@@ -119,27 +120,63 @@
                         <Point3D x="100.0" y="100.0" z="200.0" />
                     </rotationAxis>
                     <font>
-                        <Font name="System Bold" size="17.0" />
+                        <Font name="System Bold" size="12.0" />
                     </font>
                 </Button>
-                <TextArea fx:id="ripCMD" editable="false" layoutX="19.0" layoutY="469.0" prefHeight="195.0" prefWidth="611.0" style="-fx-control-inner-background:#000000; -fx-font-family: Consolas; -fx-highlight-fill: #00ff00; -fx-highlight-text-fill: White; -fx-text-fill: White;" />
-                <Label alignment="CENTER" layoutX="228.0" layoutY="386.0" style="&#10;" text="RIP Configuration " textAlignment="CENTER" wrapText="false">
+                <TextArea fx:id="ripCMD" editable="false" layoutX="14.0" layoutY="469.0" prefHeight="164.0" prefWidth="1055.0" style="-fx-control-inner-background:#000000; -fx-font-family: Consolas; -fx-highlight-fill: #00ff00; -fx-highlight-text-fill: White; -fx-text-fill: White;" />
+                <Label alignment="CENTER" layoutX="448.0" layoutY="391.0" style="&#10;" text="RIP Configuration " textAlignment="CENTER" textFill="#2b1eba" wrapText="false">
                     <font>
-                        <Font size="24.0" />
+                        <Font name="Liberation Sans" size="30.0" />
                     </font>
                 </Label>
-                <Button fx:id="UPDATE_BUTTON" layoutX="337.0" layoutY="415.0" mnemonicParsing="false" onAction="#receiveTable" prefHeight="36.0" prefWidth="234.0" text="UPDATE TABLE" textFill="RED">
+                <Button fx:id="UPDATE_BUTTON" layoutX="578.0" layoutY="426.0" mnemonicParsing="false" onAction="#receiveTable" prefHeight="36.0" prefWidth="248.0" text="UPDATE TABLE" textFill="RED">
                     <font>
                         <Font name="System Bold" size="17.0" />
                     </font>
                 </Button>
-            <Button layoutX="70.0" layoutY="415.0" mnemonicParsing="false" onAction="#sendTables" prefHeight="36.0" prefWidth="234.0" text="SEND TABLE" textFill="RED">
+            <Button layoutX="301.0" layoutY="426.0" mnemonicParsing="false" onAction="#sendTables" prefHeight="36.0" prefWidth="248.0" text="SEND TABLE" textFill="RED">
                <font>
                   <Font name="System Bold" size="17.0" />
+               </font>
+            </Button>
+            <Label layoutX="826.0" layoutY="14.0" text="Host Configuration" textFill="#2c1fb8">
+               <font>
+                  <Font name="Liberation Sans" size="30.0" />
+               </font></Label>
+            <TitledPane animated="false" collapsible="false" layoutX="814.0" layoutY="54.0" prefHeight="195.0" prefWidth="273.0" text="Packet Connection">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="173.0" prefWidth="238.0">
+                     <children>
+                        <Label layoutX="72.0" layoutY="14.0" text="Destination">
+                           <font>
+                              <Font size="26.0" />
+                           </font>
+                        </Label>
+                        <TextField fx:id="DEST_IP" layoutX="54.0" layoutY="55.0" prefHeight="38.0" prefWidth="186.0" promptText="Ip Of Destination" />
+                        <Button fx:id="PACKET_BTN" layoutX="53.0" layoutY="101.0" mnemonicParsing="false" onAction="#connectToRouter" prefHeight="36.0" prefWidth="187.0" text="Connect/Send Packet">
+                           <font>
+                              <Font name="System Bold" size="13.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </AnchorPane>
+               </content>
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+            </TitledPane>
+            <TextArea fx:id="cmd1" editable="false" layoutX="814.0" layoutY="249.0" prefHeight="112.0" prefWidth="273.0" style="-fx-control-inner-background:#000000; -fx-font-family: FreeSans; -fx-highlight-fill: #00ff00; -fx-highlight-text-fill: White; -fx-text-fill: White;" />
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#070707" height="370.0" layoutX="791.0" layoutY="8.0" opacity="0.18" stroke="BLACK" strokeType="INSIDE" width="4.0" />
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#070707" height="4.0" layoutX="3.0" layoutY="378.0" opacity="0.18" stroke="BLACK" strokeType="INSIDE" width="1100.0" />
+            <Button fx:id="ON_HOST" layoutX="635.0" layoutY="14.0" mnemonicParsing="false" onAction="#onHost" prefHeight="36.0" prefWidth="136.0" text="Listen For Hosts" textAlignment="CENTER" textFill="#1ebc3b">
+               <effect>
+                  <ColorAdjust />
+               </effect>
+               <font>
+                  <Font name="System Bold" size="12.0" />
                </font>
             </Button>
             </children>
         </AnchorPane>
     </children>
 </VBox>
-

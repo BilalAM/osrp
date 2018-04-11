@@ -34,8 +34,10 @@ public class Responder {
 				if(connectedRouter.isClosed()) {
 					continue;
 				}
-				ObjectOutputStream output = new ObjectOutputStream(connectedRouter.getOutputStream());
+				ObjectOutputStream out = new ObjectOutputStream(connectedRouter.getOutputStream());
+				out.flush();
 				ObjectInputStream input = new ObjectInputStream(connectedRouter.getInputStream());
+				//input.reset();
 				table = (Table)input.readObject();
 				tables.add(table);
 				//input.close();
@@ -45,5 +47,4 @@ public class Responder {
 		}
 		return tables;
 	}
-
 }
