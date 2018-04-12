@@ -123,6 +123,23 @@ public class Router {
 
 
 
+    /***********************************************************************
+     *
+     *                   PACKET FORWARD AND RECEIVE LOGICS
+     *
+     *                       ENTER AT YOUR OWN RISK !
+     *
+     *                           MAGIC AT WORK OVER HERE !
+     *
+     *
+     ***********************************************************************/
+
+
+    /****************************************************************************
+     *                             MAGIC ENDS HERE
+     *
+     ****************************************************************************/
+
 
     private boolean checkExistingConnection(Socket router){
         for(Socket socket : connectionHistory){
