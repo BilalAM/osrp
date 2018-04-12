@@ -5,7 +5,7 @@ import java.net.InetAddress;
 
 
 // please see Table.java
-@Deprecated(since = "7/3/2018")
+@Deprecated
 public class Entry implements Serializable {
 
 
