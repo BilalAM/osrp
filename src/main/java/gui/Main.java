@@ -2,6 +2,7 @@ package gui;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
@@ -25,17 +26,14 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
         try {
             FXMLLoader loader = new FXMLLoader();
-            String property = System.getProperties().getProperty("path.to.file", "/home/bilalam/Documents/git/osrp/src/main/java/gui/sample2.fxml");
-            String pathToFXML = property;
-            FileInputStream fileStream = new FileInputStream(pathToFXML);
-            VBox box = (VBox) loader.load(fileStream);
-
-            Scene scene = new Scene(box);
-            primaryStage.setScene(scene);
+            loader.setLocation(getClass().getResource("/sample2.fxml"));
+            Parent root = loader.load();
+            primaryStage.setTitle("Hello World");
+            primaryStage.setScene(new Scene(root, 1103, 735));
             primaryStage.show();
 
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            e.printStackTrace();
         }
     }
 
