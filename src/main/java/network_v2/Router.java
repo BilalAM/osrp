@@ -46,7 +46,7 @@ public class Router {
                 System.out.println("A new connection has been found...");
                 System.out.println("Adding the new socket to the history list of 'this' router ");
                 connectionHistory.add(otherRouter);
-                routerTable.addNewEntry(InetAddress.getByName(GUIUtils.getPrivateIp("wlo1")), otherRouter.getInetAddress(),InetAddress.getByName("0.0.0.0"),1);
+                routerTable.addNewEntry(InetAddress.getByName(GUIUtils.getPrivateIp("wlxa0f3c12c7d2a")), otherRouter.getInetAddress(),InetAddress.getByName("0.0.0.0"),1);
                 routerTable.displayTable();
               //  buildCMD(otherRouter);
             }
@@ -64,7 +64,7 @@ public class Router {
                 System.out.println("A new connection has been found...");
                 System.out.println("Adding the new socket to the history list of 'this' router ");
                 connectionHistory.add(socket);
-                routerTable.addNewEntry(InetAddress.getByName(GUIUtils.getPrivateIp("wlo1")), socket.getInetAddress(), InetAddress.getByName("0.0.0.0"), 1);
+                routerTable.addNewEntry(InetAddress.getByName(GUIUtils.getPrivateIp("wlxa0f3c12c7d2a")), socket.getInetAddress(), InetAddress.getByName("0.0.0.0"), 1);
                 routerTable.displayTable();
              //   buildCMD(socket);
             }
@@ -79,6 +79,7 @@ public class Router {
      * accept host connection and also recieve the packet
      */
     public void acceptHostConnection() {
+
         try {
             Socket host = hostServerSocket.accept();
             System.out.println("ROUTER IS CONNECTED TO A HOST");
@@ -88,6 +89,8 @@ public class Router {
                 Packet packet = (Packet) inputFromHost.readObject();
                 System.out.println("PACKET IS RECIEVED BY ROUTER !");
                 System.out.println(packet.toString());
+                System.out.println("THE SHORTEST COST ENTRY FOR THIS PACKET TO BE FORWARDED TOO...");
+                System.out.println(PacketForwarderUtils.getShortestFirstEntry(routerTable,packet).toString());
             }else{
                 System.out.println("host has not sent any packet as of yet , but thats impossbile.");
             }
@@ -100,7 +103,7 @@ public class Router {
 
         try{
             for(int i = 0 ; i < 1 ; i++) {
-                Socket socket = new Socket(GUIUtils.getPrivateIp("wlo1"),2001);
+                Socket socket = new Socket(GUIUtils.getPrivateIp("wlxa0f3c12c7d2a"),2001);
                 ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
 
                 outputStream.writeObject(packetToSend);
@@ -118,6 +121,9 @@ public class Router {
         }
         return false;
     }
+
+
+
 
 
    /* private void buildCMD(Socket socket){

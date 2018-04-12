@@ -66,7 +66,7 @@
             // selfHost.connectToRouter(IPsHelper.getPrivateIp("wlo1"));
             Packet packet = new Packet();
             try {
-                packet.setSourceAddress(InetAddress.getByName(GUIUtils.getPrivateIp("wlo1")));
+                packet.setSourceAddress(InetAddress.getByName(GUIUtils.getPrivateIp("wlxa0f3c12c7d2a")));
                 packet.setPacketMessage("HELLO THIS IS A PACKET MESSAGE :)");
                 packet.setDestinationAddress(InetAddress.getByName(DEST_IP.getText()));
                 self.requestHostConnection(packet);
