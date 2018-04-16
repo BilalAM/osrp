@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 public class Table implements Serializable {
 
     private static final long serialVersionUID = -985473150010261626L;
-    InetAddress destination;
+   public  InetAddress destination;
     InetAddress next;
     InetAddress source;
     int cost;
@@ -58,10 +58,10 @@ public class Table implements Serializable {
     public static class Entry implements Serializable {
 
 
-        InetAddress destination;
-        InetAddress next;
-        InetAddress source;
-        int cost;
+        public InetAddress destination;
+        public InetAddress next;
+        public InetAddress source;
+        public int cost;
 
         public Entry(InetAddress source , InetAddress destination, InetAddress next, int cost) {
             this.source = source;

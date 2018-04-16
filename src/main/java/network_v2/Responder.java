@@ -60,19 +60,21 @@ public class Responder {
      * @param otherRouter
      * @throws Exception : POSSIBLE EXCEPTIONS : Connection reset , SocketNotFound or StreamCorrupted
      */
-    private void _recieveTables(Socket otherRouter , Router selfRouter) throws Exception{
+    private void _recieveTables(Socket otherRouter , Router selfRouter) throws Exception {
         Updater updater = new Updater();
         ObjectInputStream input = new ObjectInputStream(otherRouter.getInputStream());
         System.out.println("attempting to receive table from stream");
-        Table t = (Table) input.readObject();
-        tables.add(t);
-        System.out.println("a table is received and added to the inner list...");
-        t.displayTable();
-        System.out.println("ATTEMPTING TO UPDATE OUR TABLE...");
-        updater.Update(selfRouter.getTable(),t);
-        System.out.println("OUR UPDATED TABLE WITH A NEW ENTRY....");
-        selfRouter.getTable().displayTable();
-        System.out.println("IS SOCKET CLOSED ? (WITH STREAM) ? " + otherRouter.isClosed());
+      //  if (input.readObject() instanceof Table) {
+            Table t = (Table) input.readObject();
+            tables.add(t);
+            System.out.println("a table is received and added to the inner list...");
+            t.displayTable();
+            System.out.println("ATTEMPTING TO UPDATE OUR TABLE...");
+            updater.Update(selfRouter.getTable(), t);
+            System.out.println("OUR UPDATED TABLE WITH A NEW ENTRY....");
+            selfRouter.getTable().displayTable();
+            System.out.println("IS SOCKET CLOSED ? (WITH STREAM) ? " + otherRouter.isClosed());
+      //  }
     }
 
 
