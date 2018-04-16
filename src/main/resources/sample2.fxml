@@ -168,7 +168,7 @@
             <TextArea fx:id="cmd1" editable="false" layoutX="814.0" layoutY="249.0" prefHeight="112.0" prefWidth="273.0" style="-fx-control-inner-background:#000000; -fx-font-family: FreeSans; -fx-highlight-fill: #00ff00; -fx-highlight-text-fill: White; -fx-text-fill: White;" />
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#070707" height="370.0" layoutX="791.0" layoutY="8.0" opacity="0.18" stroke="BLACK" strokeType="INSIDE" width="4.0" />
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#070707" height="4.0" layoutX="3.0" layoutY="378.0" opacity="0.18" stroke="BLACK" strokeType="INSIDE" width="1100.0" />
-            <Button fx:id="ON_HOST" layoutX="635.0" layoutY="14.0" mnemonicParsing="false" onAction="#onHost" prefHeight="36.0" prefWidth="136.0" text="Listen For Hosts" textAlignment="CENTER" textFill="#1ebc3b">
+            <Button fx:id="ON_HOST" layoutX="635.0" layoutY="14.0" mnemonicParsing="false" onAction="#onListenPacket" prefHeight="36.0" prefWidth="136.0" text="**Listen For Packets**" textAlignment="CENTER" textFill="#1ebc3b">
                <effect>
                   <ColorAdjust />
                </effect>
