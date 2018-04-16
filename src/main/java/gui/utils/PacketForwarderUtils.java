@@ -1,4 +1,7 @@
-package network_v2;
+package gui.utils;
+
+import network_v2.Packet;
+import network_v2.Table;
 
 import java.net.InetAddress;
 import java.net.Socket;
@@ -25,6 +28,9 @@ public class PacketForwarderUtils {
 
         List<Table.Entry> innerList = new ArrayList<>();
         for(Table.Entry e : table.getEntries()){
+            if(isDestinationReached(packet,e)){
+                continue;
+            }
             if(e.destination.equals(extractDestination(packet))){
                 innerList.add(e);
             }
@@ -32,10 +38,14 @@ public class PacketForwarderUtils {
         return innerList;
     }
 
-    public static Table.Entry getShortestFirstEntry(Table table ,  Packet packet){
+    public static Table.Entry getShortestFirstEntry(Table table ,  Packet packet) throws UnknownHostException{
         return getMatchingEntries(table,packet).stream().min(Comparator.comparingInt(entry -> entry.cost)).orElse(null);
     }
 
+    // have we reached our destination router ?
+    private static boolean isDestinationReached(Packet packet , Table.Entry e1){
+        return packet.getDestinationAddress().equals(e1.source);
+    }
 
 
 }
