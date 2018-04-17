@@ -41,7 +41,7 @@ public class Packet implements Serializable {
     public String toString() {
         Date date = new Date();
         StringBuilder builder = new StringBuilder();
-        builder.append("\n==================================");
+        builder.append("==================================");
         builder.append("\n");
         builder.append("	       PACKET");
         builder.append("\n");

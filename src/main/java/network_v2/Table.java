@@ -18,7 +18,7 @@ public class Table implements Serializable {
 
 
     private List<Entry> entries = new ArrayList<>();
-    StringBuilder builder;
+   private StringBuilder builder;
 
     public void addNewEntry(InetAddress source , InetAddress destination , InetAddress next , int cost){
         this.source = source;
@@ -28,6 +28,9 @@ public class Table implements Serializable {
         entries.add(new Entry(source,destination,next,cost));
     }
 
+    public String getTableBuilder(){
+        return builder.toString();
+    }
     /**
      * Sometimes the 'connect to' button runs two times (due to thread-y stuff) , so in order to remove duplicate values i did stream().distinct() values..
      *

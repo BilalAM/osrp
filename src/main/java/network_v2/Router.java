@@ -19,7 +19,9 @@ public class Router {
     private static ServerSocket packetSererSocket;
     private static List<Socket> connectionHistory = new ArrayList<>();
     private static Table routerTable;
-    private StringBuilder cmdBuilder;
+    private static StringBuilder cmdBuilder;
+    private static StringBuilder routingTableBuilder;
+    private static StringBuilder hostBuilder;
 
     /**
      * bind 'this' router to listen for other 'routers' on
@@ -38,7 +40,8 @@ public class Router {
     public Router(){
         routerTable = new Table();
         cmdBuilder = new StringBuilder();
-
+        routingTableBuilder = new StringBuilder();
+        hostBuilder = new StringBuilder();
     }
     public void acceptConnections(){
         try{
@@ -46,13 +49,22 @@ public class Router {
 
             if(checkExistingConnection(otherRouter)){
                 System.out.println("connection already exists !!");
+                cmdBuilder.append("$- Router Connection Already Exist ..Try Again Later..\n");
             }else{
                 System.out.println("A new connection has been found...");
                 System.out.println("Adding the new socket to the history list of 'this' router ");
+                cmdBuilder.append("$- A New Connection Has Been Found....\n");
+                cmdBuilder.append("$- Adding The New Router Entry To The List And Table...\n");
+
+
                 connectionHistory.add(otherRouter);
                 routerTable.addNewEntry(InetAddress.getByName(GUIUtils.getPrivateIp("wlo1")), otherRouter.getInetAddress(),InetAddress.getByName("0.0.0.0"),1);
                 routerTable.displayTable();
-              //  buildCMD(otherRouter);
+
+                routingTableBuilder.append(routerTable.getTableBuilder());
+
+
+                //  buildCMD(otherRouter);
             }
         }catch(Exception e){
             e.printStackTrace();
@@ -64,13 +76,23 @@ public class Router {
             Socket socket = new Socket(InetAddress.getByName(ip), 2000);
             if (checkExistingConnection(socket)) {
                 System.out.println("Connection already exists !!");
+                cmdBuilder.append("$- Router Connection Already Exist ..Try Again Later..\n");
+
             } else {
                 System.out.println("A new connection has been found...");
                 System.out.println("Adding the new socket to the history list of 'this' router ");
+
+                cmdBuilder.append("$- A New Connection Has Been Found....\n");
+                cmdBuilder.append("$- Adding The New Router Entry To The List And Table...\n");
+
                 connectionHistory.add(socket);
                 routerTable.addNewEntry(InetAddress.getByName(GUIUtils.getPrivateIp("wlo1")), socket.getInetAddress(), InetAddress.getByName("0.0.0.0"), 1);
                 routerTable.displayTable();
-             //   buildCMD(socket);
+
+                routingTableBuilder.append(routerTable.getTableBuilder());
+
+
+                //   buildCMD(socket);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -96,21 +118,37 @@ public class Router {
             Socket host = hostServerSocket.accept();
             System.out.println("ROUTER IS CONNECTED TO A HOST");
 
+            cmdBuilder.append("$- A Router Is Connected To A Host !! \n");
+            hostBuilder.append("$- A Host Is Connected To A Router !! \n " );
+
+
             if(host.getInputStream().available() > 0) {
                 ObjectInputStream inputFromHost = new ObjectInputStream(host.getInputStream());
                 Packet packet = (Packet) inputFromHost.readObject();
                 System.out.println("PACKET IS INITIALLY RECIEVED BY ROUTER !");
                 System.out.println(packet.toString());
                 System.out.println("THE SHORTEST COST ENTRY FOR THIS PACKET TO BE FORWARDED TOO...");
+
                 Table.Entry entry = PacketForwarderUtils.getShortestFirstEntry(routerTable,packet);
+
+                cmdBuilder.append("$- Router Has Received A Packet By Host.. \n");
+                cmdBuilder.append(packet.toString()) ;
+
+
                 if(entry == null){
                     System.out.println("Destination reached or entry is null");
+                    cmdBuilder.append("$- Destination Has Been Reached ! Entry Is Null Now ! \n");
                 }
                 else if(AssortedUtils.isDirectEntry(entry)){
                     entry.next = entry.destination;
+                    cmdBuilder.append("$- The Shortest Cost Entry For This Packet To Be Forwarded To Is Found To Be : \n");
+                    cmdBuilder.append("$- " + entry.toString() + "\n");
+                    cmdBuilder.append("$- It Is A Direct Entry.. Changing The Next To Destination IP..\n");
                     helper(host,entry,builder,packet);
                 }
                 else{
+                    cmdBuilder.append("$- The Shortest Cost Entry For This Packet To Be Forwarded To Is Found To Be : \n");
+                    cmdBuilder.append("$- " + entry.toString() + "\n");
                     helper(host,entry,builder,packet);
                 }
             }else{
@@ -167,21 +205,32 @@ public class Router {
 
             //Thread.sleep(1000);
             Socket socket = packetSererSocket.accept();
+            cmdBuilder.append("$- Connection Received For Packet..\n");
+
+
             // System.out.println("ACCEPTED THE PACKET !! ");
             builder.append("ACCEPTED THE PACKET SOCKET !! \n");
             if (socket.getInputStream().available() > 0) {
+                cmdBuilder.append("$- Attempting To Receive The Packet .. \n");
                 ObjectInputStream input = new ObjectInputStream(socket.getInputStream());
                 Packet packet = (Packet) input.readObject();
                 builder.append("GOT A PACKET .. PRINTING IT... \n");
                 builder.append(packet.toString() + "\n");
                 builder.append("EXTRACTING SHORTEST ENTRY FROM PACKET BY CHECKING THE TABLE...\n");
+
+                cmdBuilder.append("$- Packet Received...Trying To Extract The Shortest Entry From Packet And Checking Our Table For Shortest Entry...\n ");
+
                 Table.Entry entry = PacketForwarderUtils.getShortestFirstEntry(routerTable, packet);
+                cmdBuilder.append("$- Entry Extracted...Checking further..\n");
                 if (entry == null) {
+                    cmdBuilder.append("$- ****  DESTINATION HAS BEEN REACHED ! OR A NULL ENTRY IS HERE.. GOING BACK TO LISTENING ***\n");
                     builder.append("DESTINATION REACHED OR NULL IS HERE..");
                 } else if (AssortedUtils.isDirectEntry(entry)) {
+                    cmdBuilder.append("$- It Is A Direct Entry.. Changing The Next To Destination IP..\n");
                     entry.next = entry.destination;
                     helper(socket, entry, builder, packet);
                 } else {
+                    cmdBuilder.append("$- It Is A Indirect Entry...Forwarding The Packet...");
                     helper(socket, entry, builder, packet);
                 }
             } else {
@@ -196,12 +245,19 @@ public class Router {
     }
     private void helper(Socket socket, Table.Entry entry, StringBuilder builder, Packet packet) throws Exception {
         builder.append("ENTRY OF SHORTEST IS + " + entry.toString() + "\n");
+
+        cmdBuilder.append("$- Attempting To Open A New Connection To " + entry.next + "\n");
+
         Socket _socket = new Socket(entry.next, 2002);
+        cmdBuilder.append("$- Connection Success !! \n");
+        cmdBuilder.append("$- Forwarding The Packet To This New Router..\n");
         builder.append("FORWARDING PACKET TO " + _socket.getInetAddress() + "\n");
+
         ObjectOutputStream outputStream = new ObjectOutputStream(_socket.getOutputStream());
         outputStream.writeObject(packet);
         _socket.close();
         socket.close();
+        cmdBuilder.append("$- The Packet Has Been Sent... \n");
     }
 
     @Deprecated
@@ -287,6 +343,12 @@ public class Router {
         return cmdBuilder.toString();
     }
 
+    public String getRoutingTableCMD(){
+        return routingTableBuilder.toString();
+    }
 
+    public String getHostBuilder(){
+        return hostBuilder.toString();
+    }
 }
 
