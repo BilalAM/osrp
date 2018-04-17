@@ -1,9 +1,12 @@
     package gui;
 
+    //import com.sun.javafx.application.PlatformImpl;
     import gui.utils.GUIUtils;
     import javafx.application.Platform;
+    import javafx.concurrent.Task;
     import javafx.fxml.FXML;
     import javafx.scene.control.Button;
+    import javafx.scene.control.ListView;
     import javafx.scene.control.TextArea;
     import javafx.scene.control.TextField;
 
@@ -44,6 +47,9 @@
         private TextArea cmd = new TextArea();
 
         @FXML
+        private ListView listView = new ListView();
+
+        @FXML
         private TextArea ripCMD = new TextArea();
 
         @FXML
@@ -63,24 +69,43 @@
          */
         @FXML
         private void connectToRouter() {
-            // selfHost.connectToRouter(IPsHelper.getPrivateIp("wlo1"));
-
             // magical packet-nizer loop to create and send packets
-            for (int i = 0; i < 5000; i++) {
-                Packet packet = new Packet();
-                try {
-                    packet.setSourceAddress(InetAddress.getByName(GUIUtils.getPrivateIp("wlo1")));
-                    packet.setPacketMessage("HELLO THIS IS A PACKET MESSAGE :)");
-                    packet.setDestinationAddress(InetAddress.getByName(DEST_IP.getText()));
-                    self.requestHostConnection(packet);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                hostCmd.setText(selfHost.getCmd());
-                System.out.println("host is connected to router");
-                onHost();
+                startHostToRouterAccept();
             }
-        }
+
+            private void startHostToRouterAccept(){
+                    Runnable runn = new Runnable() {
+                        @Override
+                        public void run() {
+                            runHostToRouterAccept();
+                        }
+                    };
+
+                    Thread thread = new Thread(runn);
+                    thread.setDaemon(true);
+                    thread.start();
+            }
+            private void runHostToRouterAccept() {
+                for (int i = 0; i < 10; i++){
+                    Packet packet = new Packet();
+                    try {
+                        packet.setSourceAddress(InetAddress.getByName(GUIUtils.getPrivateIp("wlo1")));
+                        packet.setPacketMessage("HELLO THIS IS A PACKET MESSAGE :)");
+                        packet.setDestinationAddress(InetAddress.getByName(DEST_IP.getText()));
+                        self.requestHostConnection(packet);
+                        Platform.runLater(() ->{
+                            listView.getItems().clear();
+                            listView.getItems().add(self.getCMD());
+                        });
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    System.out.println("host is connected to router");
+                    self.acceptHostConnection();
+                   // onHost();
+                }
+            }
 
 
         /**
@@ -89,7 +114,8 @@
         @FXML
         private void requestConnection() {
             self.requestConnection(REQUEST_IP.getText());
-            cmd.setText(self.getCMD());
+           // routingTableListView.getItems().add(self.getRoutingTableCMD());
+            cmd.setText(self.getRoutingTableCMD());
         }
 
 
@@ -216,7 +242,9 @@
 
                     self.acceptConnections();
                     Platform.runLater(() -> {
-                        cmd.setText(self.getCMD());
+                        listView.getItems().add(self.getCMD());
+                        cmd.setText(self.getRoutingTableCMD());
+                       // cmd.setText(self.getCMD());
                     });
                 } catch (Exception e) {
                     e.printStackTrace();

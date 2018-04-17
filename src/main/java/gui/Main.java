@@ -28,7 +28,7 @@ public class Main extends Application {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource("/sample2.fxml"));
             Parent root = loader.load();
-            primaryStage.setTitle("Hello World");
+            primaryStage.setTitle("OSRP By Bilal , Neha and Umer");
             primaryStage.setScene(new Scene(root, 1103, 735));
             primaryStage.show();
 
