@@ -1,6 +1,7 @@
     package gui;
 
     //import com.sun.javafx.application.PlatformImpl;
+    import gui.utils.CmdUtils;
     import gui.utils.GUIUtils;
     import javafx.application.Platform;
     import javafx.concurrent.Task;
@@ -86,7 +87,8 @@
                     thread.start();
             }
             private void runHostToRouterAccept() {
-                for (int i = 0; i < 10; i++){
+
+                for (int i = 0; i < 100; i++){
                     Packet packet = new Packet();
                     try {
                         packet.setSourceAddress(InetAddress.getByName(GUIUtils.getPrivateIp("wlo1")));
@@ -95,7 +97,8 @@
                         self.requestHostConnection(packet);
                         Platform.runLater(() ->{
                             listView.getItems().clear();
-                            listView.getItems().add(self.getCMD());
+                           listView.getItems().add(CmdUtils.getSharedCMDBuilder().toString());
+                           // listView.getItems().clear();
                         });
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -115,7 +118,7 @@
         private void requestConnection() {
             self.requestConnection(REQUEST_IP.getText());
            // routingTableListView.getItems().add(self.getRoutingTableCMD());
-            cmd.setText(self.getRoutingTableCMD());
+            cmd.setText(CmdUtils.getSharedRoutingCMDBuilder().toString());
         }
 
 
@@ -214,7 +217,7 @@
             //while (true) {
             self.acceptHostConnection();
             Platform.runLater(() -> {
-                cmd.setText("a host is here ! :3 ");
+                cmd.setText(CmdUtils.getSharedCMDBuilder().toString());
             });
             //}
         }
@@ -223,10 +226,9 @@
 
         private void runAcceptTask2(){
            while (true){
-               try {
-                   //self.recieveAndforwardPacket();
-                   // Thread.sleep(100);
-               }catch (Exception e){
+               try{
+                   Thread.sleep(100);
+               }catch(Exception e){
                    e.printStackTrace();
                }
                self.receiveAndForwardThePacket();
@@ -242,8 +244,9 @@
 
                     self.acceptConnections();
                     Platform.runLater(() -> {
-                        listView.getItems().add(self.getCMD());
-                        cmd.setText(self.getRoutingTableCMD());
+                        listView.getItems().add(CmdUtils.getSharedCMDBuilder().toString());
+                        //listView.getItems().clear();
+                        cmd.setText(CmdUtils.getSharedRoutingCMDBuilder().toString());
                        // cmd.setText(self.getCMD());
                     });
                 } catch (Exception e) {

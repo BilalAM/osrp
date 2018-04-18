@@ -11,6 +11,19 @@ import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import gui.utils.CmdUtils;
+
+
+/**
+ *
+ *
+ *   IN THE ROUTER PCS , I HAVE REMOVED THE STREAM CHECK CONDITION INSIDE receiveAndForwardThePacket()
+ *   IT IS NOT CAUSING THE no packet found from stream ERROR..
+ *
+ *
+ */
+
+
 public class Router {
 
 
@@ -50,19 +63,23 @@ public class Router {
             if(checkExistingConnection(otherRouter)){
                 System.out.println("connection already exists !!");
                 cmdBuilder.append("$- Router Connection Already Exist ..Try Again Later..\n");
+                CmdUtils.getSharedCMDBuilder().append("$- Router Connection Already Exist ..Try Again Later..\n");
             }else{
                 System.out.println("A new connection has been found...");
                 System.out.println("Adding the new socket to the history list of 'this' router ");
                 cmdBuilder.append("$- A New Connection Has Been Found....\n");
                 cmdBuilder.append("$- Adding The New Router Entry To The List And Table...\n");
 
+                CmdUtils.getSharedCMDBuilder().append("$- A New Connection Has Been Found....\n");
+                CmdUtils.getSharedCMDBuilder().append("$- Adding The New Router Entry To The List And Table...\n");
 
                 connectionHistory.add(otherRouter);
                 routerTable.addNewEntry(InetAddress.getByName(GUIUtils.getPrivateIp("wlo1")), otherRouter.getInetAddress(),InetAddress.getByName("0.0.0.0"),1);
                 routerTable.displayTable();
 
-                routingTableBuilder.append(routerTable.getTableBuilder());
+              //  routingTableBuilder.append(routerTable.getTableBuilder());
 
+                CmdUtils.getSharedRoutingCMDBuilder().append(routerTable.getTableBuilder());
 
                 //  buildCMD(otherRouter);
             }
@@ -77,6 +94,8 @@ public class Router {
             if (checkExistingConnection(socket)) {
                 System.out.println("Connection already exists !!");
                 cmdBuilder.append("$- Router Connection Already Exist ..Try Again Later..\n");
+                CmdUtils.getSharedCMDBuilder().append("$- Router Connection Already Exist ..Try Again Later..\n");
+
 
             } else {
                 System.out.println("A new connection has been found...");
@@ -85,12 +104,16 @@ public class Router {
                 cmdBuilder.append("$- A New Connection Has Been Found....\n");
                 cmdBuilder.append("$- Adding The New Router Entry To The List And Table...\n");
 
+
+                CmdUtils.getSharedCMDBuilder().append("$- A New Connection Has Been Found....\n");
+                CmdUtils.getSharedCMDBuilder().append("$- Adding The New Router Entry To The List And Table...\n");
+
                 connectionHistory.add(socket);
                 routerTable.addNewEntry(InetAddress.getByName(GUIUtils.getPrivateIp("wlo1")), socket.getInetAddress(), InetAddress.getByName("0.0.0.0"), 1);
                 routerTable.displayTable();
 
                 routingTableBuilder.append(routerTable.getTableBuilder());
-
+                CmdUtils.getSharedRoutingCMDBuilder().append(routerTable.getTableBuilder());
 
                 //   buildCMD(socket);
             }
@@ -121,6 +144,8 @@ public class Router {
             cmdBuilder.append("$- A Router Is Connected To A Host !! \n");
             hostBuilder.append("$- A Host Is Connected To A Router !! \n " );
 
+            CmdUtils.getSharedCMDBuilder().append("$- A Router Is Connected To A Host !! \n");
+
 
             if(host.getInputStream().available() > 0) {
                 ObjectInputStream inputFromHost = new ObjectInputStream(host.getInputStream());
@@ -135,20 +160,37 @@ public class Router {
                 cmdBuilder.append(packet.toString()) ;
 
 
+                CmdUtils.getSharedCMDBuilder().append("$- Router Has Received A Packet By Host.. \n");
+                CmdUtils.getSharedCMDBuilder().append(packet.toString()) ;
+
+
+
                 if(entry == null){
                     System.out.println("Destination reached or entry is null");
                     cmdBuilder.append("$- Destination Has Been Reached ! Entry Is Null Now ! \n");
+                   CmdUtils.getSharedCMDBuilder().append("$- Destination Has Been Reached ! Entry Is Null Now ! \n");
+
                 }
                 else if(AssortedUtils.isDirectEntry(entry)){
                     entry.next = entry.destination;
                     cmdBuilder.append("$- The Shortest Cost Entry For This Packet To Be Forwarded To Is Found To Be : \n");
                     cmdBuilder.append("$- " + entry.toString() + "\n");
                     cmdBuilder.append("$- It Is A Direct Entry.. Changing The Next To Destination IP..\n");
+
+                    CmdUtils.getSharedCMDBuilder().append("$- The Shortest Cost Entry For This Packet To Be Forwarded To Is Found To Be : \n");
+                    CmdUtils.getSharedCMDBuilder().append("$- " + entry.toString() + "\n");
+                    CmdUtils.getSharedCMDBuilder().append("$- It Is A Direct Entry.. Changing The Next To Destination IP..\n");
+
+
                     helper(host,entry,builder,packet);
                 }
                 else{
                     cmdBuilder.append("$- The Shortest Cost Entry For This Packet To Be Forwarded To Is Found To Be : \n");
                     cmdBuilder.append("$- " + entry.toString() + "\n");
+
+                    CmdUtils.getSharedCMDBuilder().append("$- The Shortest Cost Entry For This Packet To Be Forwarded To Is Found To Be : \n");
+                    CmdUtils.getSharedCMDBuilder().append("$- " + entry.toString() + "\n");
+
                     helper(host,entry,builder,packet);
                 }
             }else{
@@ -207,11 +249,14 @@ public class Router {
             Socket socket = packetSererSocket.accept();
             cmdBuilder.append("$- Connection Received For Packet..\n");
 
+            CmdUtils.getSharedCMDBuilder().append("$- Connection Received For Packet..\n");
+
 
             // System.out.println("ACCEPTED THE PACKET !! ");
             builder.append("ACCEPTED THE PACKET SOCKET !! \n");
-            if (socket.getInputStream().available() > 0) {
                 cmdBuilder.append("$- Attempting To Receive The Packet .. \n");
+               CmdUtils.getSharedCMDBuilder().append("$- Attempting To Receive The Packet .. \n");
+
                 ObjectInputStream input = new ObjectInputStream(socket.getInputStream());
                 Packet packet = (Packet) input.readObject();
                 builder.append("GOT A PACKET .. PRINTING IT... \n");
@@ -220,22 +265,31 @@ public class Router {
 
                 cmdBuilder.append("$- Packet Received...Trying To Extract The Shortest Entry From Packet And Checking Our Table For Shortest Entry...\n ");
 
+                CmdUtils.getSharedCMDBuilder().append("$- Packet Received...Trying To Extract The Shortest Entry From Packet And Checking Our Table For Shortest Entry...\n ");
+
+
                 Table.Entry entry = PacketForwarderUtils.getShortestFirstEntry(routerTable, packet);
                 cmdBuilder.append("$- Entry Extracted...Checking further..\n");
+                CmdUtils.getSharedCMDBuilder().append("$- Entry Extracted...Checking further..\n");
+
                 if (entry == null) {
                     cmdBuilder.append("$- ****  DESTINATION HAS BEEN REACHED ! OR A NULL ENTRY IS HERE.. GOING BACK TO LISTENING ***\n");
+                    CmdUtils.getSharedCMDBuilder().append("$- ****  DESTINATION HAS BEEN REACHED ! OR A NULL ENTRY IS HERE.. GOING BACK TO LISTENING ***\n");
+
                     builder.append("DESTINATION REACHED OR NULL IS HERE..");
                 } else if (AssortedUtils.isDirectEntry(entry)) {
                     cmdBuilder.append("$- It Is A Direct Entry.. Changing The Next To Destination IP..\n");
+                   CmdUtils.getSharedCMDBuilder().append("$- It Is A Direct Entry.. Changing The Next To Destination IP..\n");
+
                     entry.next = entry.destination;
                     helper(socket, entry, builder, packet);
                 } else {
                     cmdBuilder.append("$- It Is A Indirect Entry...Forwarding The Packet...");
+                    CmdUtils.getSharedCMDBuilder().append("$- It Is A Indirect Entry...Forwarding The Packet...");
+
                     helper(socket, entry, builder, packet);
                 }
-            } else {
-                System.out.println("no packet is received...");
-            }
+
             System.out.println(builder.toString());
 
         } catch (Exception e) {
@@ -247,10 +301,15 @@ public class Router {
         builder.append("ENTRY OF SHORTEST IS + " + entry.toString() + "\n");
 
         cmdBuilder.append("$- Attempting To Open A New Connection To " + entry.next + "\n");
+        CmdUtils.getSharedCMDBuilder().append("$- Attempting To Open A New Connection To " + entry.next + "\n");
 
         Socket _socket = new Socket(entry.next, 2002);
         cmdBuilder.append("$- Connection Success !! \n");
         cmdBuilder.append("$- Forwarding The Packet To This New Router..\n");
+
+        CmdUtils.getSharedCMDBuilder().append("$- Connection Success !! \n");
+        CmdUtils.getSharedCMDBuilder().append("$- Forwarding The Packet To This New Router..\n");
+
         builder.append("FORWARDING PACKET TO " + _socket.getInetAddress() + "\n");
 
         ObjectOutputStream outputStream = new ObjectOutputStream(_socket.getOutputStream());
@@ -258,6 +317,8 @@ public class Router {
         _socket.close();
         socket.close();
         cmdBuilder.append("$- The Packet Has Been Sent... \n");
+        CmdUtils.getSharedCMDBuilder().append("$- The Packet Has Been Sent... \n");
+
     }
 
     @Deprecated
