@@ -12,6 +12,7 @@
     import javafx.scene.control.TextField;
 
     import javafx.scene.text.TextFlow;
+    import network_rip.PacketForwarder;
     import network_v2.Responder;
     import network_v2.Router;
     import network_v2.Packet;
@@ -24,6 +25,10 @@
         private static Router self = new Router();
         private Responder responder = new Responder();
         private static Host selfHost = new Host();
+        private PacketForwarder packetForwarder = new PacketForwarder();
+
+
+
 
 
         @FXML
@@ -94,7 +99,7 @@
                         packet.setSourceAddress(InetAddress.getByName(GUIUtils.getPrivateIp("wlo1")));
                         packet.setPacketMessage("HELLO THIS IS A PACKET MESSAGE :)");
                         packet.setDestinationAddress(InetAddress.getByName(DEST_IP.getText()));
-                        self.requestHostConnection(packet);
+                        packetForwarder.requestHostConnection(packet);
                         Platform.runLater(() ->{
                             listView.getItems().clear();
                            listView.getItems().add(CmdUtils.getSharedCMDBuilder().toString());
@@ -105,7 +110,7 @@
                     }
 
                     System.out.println("host is connected to router");
-                    self.acceptHostConnection();
+                    packetForwarder.acceptHostConnection(self);
                    // onHost();
                 }
             }
@@ -215,7 +220,7 @@
 
         private void runHostAcceptTask() {
             //while (true) {
-            self.acceptHostConnection();
+            packetForwarder.acceptHostConnection(self);
             Platform.runLater(() -> {
                 cmd.setText(CmdUtils.getSharedCMDBuilder().toString());
             });
@@ -231,7 +236,7 @@
                }catch(Exception e){
                    e.printStackTrace();
                }
-               self.receiveAndForwardThePacket();
+               packetForwarder.receiveAndForwardThePacket(self);
                 Platform.runLater(() -> {
                     cmd.setText("hello love :)");
                 });

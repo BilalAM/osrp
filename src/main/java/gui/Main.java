@@ -29,7 +29,7 @@ public class Main extends Application {
             loader.setLocation(getClass().getResource("/sample2.fxml"));
             Parent root = loader.load();
             primaryStage.setTitle("OSRP By Bilal , Neha and Umer");
-            primaryStage.setScene(new Scene(root, 1103, 735));
+            primaryStage.setScene(new Scene(root, 1150, 695));
             primaryStage.show();
 
         } catch (Exception e) {
