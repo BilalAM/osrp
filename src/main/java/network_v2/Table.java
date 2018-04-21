@@ -9,10 +9,10 @@ import java.util.stream.Collectors;
 public class Table implements Serializable {
 
     private static final long serialVersionUID = -985473150010261626L;
-   public  InetAddress destination;
-    InetAddress next;
-    InetAddress source;
-    int cost;
+    public  InetAddress destination;
+    public InetAddress next;
+    public InetAddress source;
+    public  int cost;
 
 
 
@@ -39,17 +39,17 @@ public class Table implements Serializable {
         builder = new StringBuilder();
         System.out.println("\n");
         builder.append("\n");
-        builder.append("==============================================");
+        builder.append("=====================================================");
         builder.append("\n");
         builder.append("SOURCE \t\t  DESTINATION \t\t          NEXT \t \t    COST ");
         builder.append("\n");
-        builder.append("==============================================");
+        builder.append("=====================================================");
         builder.append("\n");
         System.out.println("==============================================");
         System.out.println("SOURCE \t\t DESTINATION \t\t          NEXT \t \t    COST ");
         System.out.println("==============================================");
         for (Entry entry : entries.stream().distinct().collect(Collectors.toList())) {
-            builder.append(entry.source + "     " + entry.destination + "    " + entry.next + "    " + entry.cost);
+            builder.append(entry.source + "     " + entry.destination + "\t\t\t" + entry.next + "\t\t\t" + entry.cost);
             builder.append("\n");
             System.out.println(entry.source + "                " + entry.destination + "              " + entry.next + "               " + entry.cost);
         }
