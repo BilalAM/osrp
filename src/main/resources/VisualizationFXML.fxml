@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="713.0" prefWidth="1355.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.GraphController">
+   <children>
+      <AnchorPane prefHeight="713.0" prefWidth="1355.0">
+         <children>
+            <BarChart fx:id="myChart" barGap="9.0" categoryGap="1.0" layoutX="66.0" layoutY="26.0" prefHeight="368.0" prefWidth="571.0" title="Packets Received By Router In Seconds">
+              <xAxis>
+                <CategoryAxis label="SECONDS" />
+              </xAxis>
+              <yAxis>
+                <NumberAxis prefWidth="14.0" side="LEFT" />
+              </yAxis>
+            </BarChart>
+            <BarChart fx:id="myChart2" barGap="9.0" categoryGap="1.0" layoutX="692.0" layoutY="33.0" prefHeight="368.0" prefWidth="571.0" title="Packets Sent By Router In Seconds">
+               <xAxis>
+                  <CategoryAxis label="SECONDS" />
+               </xAxis>
+               <yAxis>
+                  <NumberAxis side="LEFT" />
+               </yAxis>
+            </BarChart>
+            <Label layoutX="36.0" layoutY="205.0" rotate="-90.0" text="PACKETS" />
+            <Label layoutX="670.0" layoutY="205.0" rotate="-90.0" text="PACKETS" />
+            <LineChart fx:id="myChart3" layoutX="199.0" layoutY="400.0" prefHeight="274.0" prefWidth="913.0" title="Memor Consumption Of Router ( In Megabytes)">
+              <xAxis>
+                <CategoryAxis side="BOTTOM" />
+              </xAxis>
+              <yAxis>
+                <NumberAxis side="LEFT" />
+              </yAxis>
+            </LineChart>
+         </children>
+      </AnchorPane>
+   </children>
+</HBox>

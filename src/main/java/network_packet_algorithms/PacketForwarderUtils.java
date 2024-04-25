@@ -1,4 +1,4 @@
-package gui.utils;
+package network_packet_algorithms;
 
 import network_v2.Packet;
 import network_v2.Table;

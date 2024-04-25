@@ -45,9 +45,9 @@ public class Table implements Serializable {
         builder.append("\n");
         builder.append("=====================================================");
         builder.append("\n");
-        System.out.println("==============================================");
-        System.out.println("SOURCE \t\t DESTINATION \t\t          NEXT \t \t    COST ");
-        System.out.println("==============================================");
+        System.out.println("=====================================================================================");
+        System.out.println("SOURCE \t\t\t\t          DESTINATION \t\t            NEXT \t \t        COST ");
+        System.out.println("=====================================================================================");
         for (Entry entry : entries.stream().distinct().collect(Collectors.toList())) {
             builder.append(entry.source + "     " + entry.destination + "\t\t\t" + entry.next + "\t\t\t" + entry.cost);
             builder.append("\n");

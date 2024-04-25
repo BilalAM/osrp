@@ -2,8 +2,7 @@ package network_v2;
 
 import gui.utils.AssortedUtils;
 import gui.utils.GUIUtils;
-import gui.utils.PacketForwarderUtils;
-
+import network_packet_algorithms.PacketForwarderUtils;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -44,7 +43,7 @@ public class Router {
         try {
             hostServerSocket = new ServerSocket(2001);
             serverSocket = new ServerSocket(2000);
-            packetSererSocket = new ServerSocket(2002,100,InetAddress.getByName(GUIUtils.getPrivateIp("wlo1")));
+            packetSererSocket = new ServerSocket(2002,100,InetAddress.getByName(GUIUtils.getPrivateIp("wlxa0f3c12c7d2a")));
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -74,7 +73,7 @@ public class Router {
                 CmdUtils.getSharedCMDBuilder().append("$- Adding The New Router Entry To The List And Table...\n");
 
                 connectionHistory.add(otherRouter);
-                routerTable.addNewEntry(InetAddress.getByName(GUIUtils.getPrivateIp("wlo1")), otherRouter.getInetAddress(),InetAddress.getByName("0.0.0.0"),1);
+                routerTable.addNewEntry(InetAddress.getByName(GUIUtils.getPrivateIp("wlxa0f3c12c7d2a")), otherRouter.getInetAddress(),InetAddress.getByName("0.0.0.0"),1);
                 routerTable.displayTable();
 
               //  routingTableBuilder.append(routerTable.getTableBuilder());
@@ -109,7 +108,7 @@ public class Router {
                 CmdUtils.getSharedCMDBuilder().append("$- Adding The New Router Entry To The List And Table...\n");
 
                 connectionHistory.add(socket);
-                routerTable.addNewEntry(InetAddress.getByName(GUIUtils.getPrivateIp("wlo1")), socket.getInetAddress(), InetAddress.getByName("0.0.0.0"), 1);
+                routerTable.addNewEntry(InetAddress.getByName(GUIUtils.getPrivateIp("wlxa0f3c12c7d2a")), socket.getInetAddress(), InetAddress.getByName("0.0.0.0"), 1);
                 routerTable.displayTable();
 
                 routingTableBuilder.append(routerTable.getTableBuilder());

@@ -13,8 +13,9 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="655.0" prefWidth="1147.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.MainController2">
+<VBox prefHeight="515.0" prefWidth="1169.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.MainController2">
     <children>
+              <Label fx:id="testLabel" prefHeight="3.0" prefWidth="0.0" text="labell" />
         <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="658.0" prefWidth="1103.0" VBox.vgrow="ALWAYS">
             <children>
                 <Label alignment="CENTER" layoutX="251.0" layoutY="14.0" style="&#10;" text="Router Configuration " textAlignment="CENTER" textFill="#2b1eba" wrapText="false">
@@ -28,52 +29,52 @@
                             <children>
                                 <Label layoutX="6.0" layoutY="6.0" prefHeight="21.0" prefWidth="65.0" text="Status">
                                     <font>
-                                        <Font name="DejaVu Serif Bold" size="13.0" />
+                                        <Font name="DejaVu Sans Condensed Bold" size="14.0" />
                                     </font>
                                 </Label>
                                 <Label layoutX="6.0" layoutY="34.0" prefHeight="21.0" prefWidth="65.0" text="Uptime">
                                     <font>
-                                        <Font name="DejaVu Serif Bold" size="13.0" />
+                                        <Font name="DejaVu Sans Condensed Bold" size="14.0" />
                                     </font>
                                 </Label>
                                 <Label layoutX="6.0" layoutY="61.0" prefHeight="21.0" prefWidth="65.0" text="IP">
                                     <font>
-                                        <Font name="DejaVu Serif Bold" size="13.0" />
+                                        <Font name="DejaVu Sans Condensed Bold" size="14.0" />
                                     </font>
                                 </Label>
                                 <Label layoutX="3.0" layoutY="86.0" prefHeight="21.0" prefWidth="138.0" text="Available Memory">
                                     <font>
-                                        <Font name="DejaVu Serif Bold" size="13.0" />
+                                        <Font name="DejaVu Sans Condensed Bold" size="14.0" />
                                     </font>
                                 </Label>
                                 <Label layoutX="2.0" layoutY="120.0" prefHeight="21.0" prefWidth="165.0" text="Memory Consumption">
                                     <font>
-                                        <Font name="DejaVu Serif Bold" size="13.0" />
+                                        <Font name="DejaVu Sans Condensed Bold" size="14.0" />
                                     </font>
                                 </Label>
-                                <Label fx:id="STATUS" layoutX="170.0" layoutY="11.0" text="--" textFill="#752626">
+                                <Label fx:id="STATUS" layoutX="170.0" layoutY="11.0" text="--" textFill="RED">
                                     <font>
-                                        <Font name="DejaVu Sans Bold" size="14.0" />
+                                        <Font name="DejaVu Sans Condensed" size="17.0" />
                                     </font>
                                 </Label>
-                                <Label fx:id="UP_TIME" layoutX="169.0" layoutY="39.0" text="--" textFill="#752626">
+                                <Label fx:id="UP_TIME" layoutX="169.0" layoutY="39.0" text="--" textFill="RED">
                                     <font>
-                                        <Font name="DejaVu Sans Bold" size="14.0" />
+                                        <Font name="DejaVu Sans Condensed" size="17.0" />
                                     </font>
                                 </Label>
-                                <Label fx:id="IP" layoutX="169.0" layoutY="66.0" text="--" textFill="#752626">
+                                <Label fx:id="IP" layoutX="169.0" layoutY="66.0" text="--" textFill="RED">
                                     <font>
-                                        <Font name="DejaVu Sans Bold" size="14.0" />
+                                        <Font name="DejaVu Sans Condensed" size="17.0" />
                                     </font>
                                 </Label>
-                                <Label fx:id="MAC" layoutX="169.0" layoutY="122.0" text="--" textFill="#752626">
+                                <Label fx:id="MAC" layoutX="169.0" layoutY="122.0" text="--" textFill="RED">
                                     <font>
-                                        <Font name="DejaVu Sans Bold" size="14.0" />
+                                        <Font name="DejaVu Sans Condensed" size="17.0" />
                                     </font>
                                 </Label>
-                                <Label fx:id="RAM" layoutX="169.0" layoutY="91.0" text="--" textFill="#752626">
+                                <Label fx:id="RAM" layoutX="169.0" layoutY="91.0" text="--" textFill="RED">
                                     <font>
-                                        <Font name="DejaVu Sans Bold" size="14.0" />
+                                        <Font name="DejaVu Sans Condensed" size="17.0" />
                                     </font>
                                 </Label>
                                 <Label layoutX="3.0" layoutY="100.0" prefHeight="21.0" prefWidth="138.0" text="(In MBs)">
@@ -90,10 +91,10 @@
                         </AnchorPane>
                     </content>
                     <font>
-                        <Font name="System Bold" size="13.0" />
+                        <Font name="DejaVu Sans Condensed Bold" size="14.0" />
                     </font>
                 </TitledPane>
-                <TextArea fx:id="cmd" editable="false" layoutX="19.0" layoutY="249.0" prefHeight="112.0" prefWidth="750.0" style="-fx-control-inner-background:#000000; -fx-font-family: FreeSans; -fx-highlight-fill: #00ff00; -fx-highlight-text-fill: White; -fx-text-fill: White;" />
+                <TextArea fx:id="cmd" editable="false" layoutX="19.0" layoutY="249.0" prefHeight="112.0" prefWidth="750.0" style="-fx-control-inner-background: #000000; -fx-font-family: FreeSans; -fx-highlight-fill: #00ff00; -fx-highlight-text-fill: White; -fx-text-fill: White;" />
                 <TitledPane animated="false" collapsible="false" layoutX="422.0" layoutY="54.0" prefHeight="195.0" prefWidth="347.0" text="Connection">
                     <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="168.0" prefWidth="351.0">
@@ -104,61 +105,63 @@
                                     </font>
                                 </Label>
                                 <TextField fx:id="REQUEST_IP" layoutX="62.0" layoutY="54.0" prefHeight="38.0" prefWidth="210.0" promptText="Ip Of Router" />
-                                <Button layoutX="114.0" layoutY="109.0" mnemonicParsing="false" onAction="#requestConnection" prefHeight="38.0" prefWidth="107.0" text="CONNECT" />
-                                <Label fx:id="testLabel" layoutX="33.0" layoutY="147.0" prefHeight="15.0" prefWidth="105.0" text="labell" />
+                                <Button layoutX="78.0" layoutY="107.0" mnemonicParsing="false" onAction="#requestConnection" prefHeight="38.0" prefWidth="178.0" style="-fx-background-color: #4da6ff;" text="CONNECT" textFill="#fff9f9">
+                           <font>
+                              <Font name="DejaVu Sans Condensed Bold" size="14.0" />
+                           </font></Button>
                             </children>
                         </AnchorPane>
                     </content>
                     <font>
-                        <Font name="System Bold" size="13.0" />
+                        <Font name="DejaVu Sans Condensed Bold" size="14.0" />
                     </font>
                 </TitledPane>
-                <Button layoutX="19.0" layoutY="15.0" mnemonicParsing="false" onAction="#on" prefHeight="35.0" prefWidth="136.0" text="On" textAlignment="CENTER" textFill="#ba1e1e">
+                <Button layoutX="19.0" layoutY="15.0" mnemonicParsing="false" onAction="#on" prefHeight="35.0" prefWidth="178.0" style="-fx-background-color: #4da6ff;" text="On" textAlignment="CENTER" textFill="WHITE">
                     <effect>
-                        <ColorAdjust />
+                        <ColorAdjust saturation="-0.07" />
                     </effect>
                     <rotationAxis>
                         <Point3D x="100.0" y="100.0" z="200.0" />
                     </rotationAxis>
                     <font>
-                        <Font name="System Bold" size="12.0" />
+                        <Font name="DejaVu Sans Condensed Bold" size="14.0" />
                     </font>
                 </Button>
-                <TextArea fx:id="ripCMD" editable="false" layoutX="1087.0" layoutY="141.0" prefHeight="164.0" prefWidth="4.0" style="-fx-control-inner-background:#000000; -fx-font-family: Consolas; -fx-highlight-fill: #00ff00; -fx-highlight-text-fill: White; -fx-text-fill: White;" />
-                <Label alignment="CENTER" layoutX="448.0" layoutY="391.0" style="&#10;" text="RIP Configuration " textAlignment="CENTER" textFill="#2b1eba" wrapText="false">
+                <Label alignment="CENTER" layoutX="619.0" layoutY="385.0" style="&#10;" text="RIP Configuration " textAlignment="CENTER" textFill="#2b1eba" wrapText="false">
                     <font>
                         <Font name="Liberation Sans" size="30.0" />
                     </font>
                 </Label>
-                <Button fx:id="UPDATE_BUTTON" layoutX="578.0" layoutY="426.0" mnemonicParsing="false" onAction="#receiveTable" prefHeight="36.0" prefWidth="248.0" text="UPDATE TABLE" textFill="RED">
+                <Button fx:id="UPDATE_BUTTON" layoutX="742.0" layoutY="423.0" mnemonicParsing="false" onAction="#receiveTable" prefHeight="40.0" prefWidth="248.0" style="-fx-background-color: #4da6ff;" text="UPDATE TABLE" textFill="WHITE">
                     <font>
                         <Font name="System Bold" size="17.0" />
                     </font>
                 </Button>
-            <Button layoutX="301.0" layoutY="426.0" mnemonicParsing="false" onAction="#sendTables" prefHeight="36.0" prefWidth="248.0" text="SEND TABLE" textFill="RED">
+            <Button layoutX="466.0" layoutY="423.0" mnemonicParsing="false" onAction="#sendTables" prefHeight="36.0" prefWidth="248.0" style="-fx-background-color: #4da6ff;" text="SEND TABLE" textFill="WHITE">
                <font>
-                  <Font name="System Bold" size="17.0" />
+                  <Font name="DejaVu Sans Condensed Bold" size="21.0" />
                </font>
             </Button>
-            <Label layoutX="826.0" layoutY="14.0" text="Host Configuration" textFill="#2c1fb8">
+            <Label layoutX="990.0" layoutY="15.0" text="Host Configuration" textFill="#2c1fb8">
                <font>
                   <Font name="Liberation Sans" size="30.0" />
                </font></Label>
-            <TitledPane animated="false" collapsible="false" layoutX="814.0" layoutY="54.0" prefHeight="195.0" prefWidth="273.0" text="Packet Connection">
+            <TitledPane animated="false" collapsible="false" layoutX="930.0" layoutY="60.0" prefHeight="195.0" prefWidth="368.0" text="Packet Connection">
                <content>
-                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="173.0" prefWidth="238.0">
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="168.0" prefWidth="327.0">
                      <children>
-                        <Label layoutX="72.0" layoutY="14.0" text="Destination">
+                        <Label layoutX="108.0" layoutY="14.0" text="Destination">
                            <font>
                               <Font size="26.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="DEST_IP" layoutX="54.0" layoutY="55.0" prefHeight="38.0" prefWidth="186.0" promptText="Ip Of Destination" />
-                        <Button fx:id="PACKET_BTN" layoutX="53.0" layoutY="101.0" mnemonicParsing="false" onAction="#connectToRouter" prefHeight="36.0" prefWidth="187.0" text="Connect/Send Packet">
+                        <TextField fx:id="DEST_IP" layoutX="66.0" layoutY="56.0" prefHeight="38.0" prefWidth="235.0" promptText="Ip Of Destination" />
+                        <Button fx:id="PACKET_BTN" layoutX="94.0" layoutY="102.0" mnemonicParsing="false" onAction="#connectToRouter" prefHeight="36.0" prefWidth="178.0" style="-fx-background-color: #4da6ff;" text="Connect/Send Packet" textFill="WHITE">
                            <font>
                               <Font name="System Bold" size="13.0" />
                            </font>
                         </Button>
+                        <TextField fx:id="packets" layoutX="286.0" layoutY="107.0" prefHeight="16.0" prefWidth="31.0" />
                      </children>
                   </AnchorPane>
                </content>
@@ -166,18 +169,21 @@
                   <Font name="System Bold" size="13.0" />
                </font>
             </TitledPane>
-            <TextArea fx:id="hostCmd" editable="false" layoutX="814.0" layoutY="249.0" prefHeight="112.0" prefWidth="273.0" style="-fx-control-inner-background:#000000; -fx-font-family: FreeSans; -fx-highlight-fill: #00ff00; -fx-highlight-text-fill: White; -fx-text-fill: White;" />
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#070707" height="370.0" layoutX="791.0" layoutY="8.0" opacity="0.18" stroke="BLACK" strokeType="INSIDE" width="4.0" />
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#070707" height="4.0" layoutX="3.0" layoutY="378.0" opacity="0.18" stroke="BLACK" strokeType="INSIDE" width="1100.0" />
-            <Button fx:id="ON_HOST" layoutX="635.0" layoutY="14.0" mnemonicParsing="false" onAction="#onListenPacket" prefHeight="36.0" prefWidth="136.0" text="**Listen For Packets**" textAlignment="CENTER" textFill="#1ebc3b">
-               <effect>
-                  <ColorAdjust />
-               </effect>
+            <TextArea fx:id="hostCmd" editable="false" layoutX="930.0" layoutY="255.0" prefHeight="112.0" prefWidth="368.0" style="-fx-control-inner-background:#000000; -fx-font-family: FreeSans; -fx-highlight-fill: #00ff00; -fx-highlight-text-fill: White; -fx-text-fill: White;" />
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#070707" height="391.0" layoutX="856.0" layoutY="-7.0" opacity="0.18" stroke="BLACK" strokeType="INSIDE" width="4.0" />
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#070707" height="4.0" layoutX="3.0" layoutY="378.0" opacity="0.18" stroke="BLACK" strokeType="INSIDE" width="1366.0" />
+            <Button fx:id="ON_HOST" layoutX="593.0" layoutY="14.0" mnemonicParsing="false" onAction="#onListenPacket" prefHeight="36.0" prefWidth="178.0" style="-fx-background-color: #4da6ff;" text="**Listen For Packets**" textAlignment="CENTER" textFill="WHITE">
+              
                <font>
-                  <Font name="System Bold" size="12.0" />
+                  <Font name="DejaVu Sans Condensed Bold" size="14.0" />
                </font>
             </Button>
-            <ListView fx:id="listView" layoutX="19.0" layoutY="462.0" prefHeight="178.0" prefWidth="1074.0" style="-fx-background-color: GREY;" />
+            <ListView fx:id="listView" layoutX="19.0" layoutY="491.0" prefHeight="140.0" prefWidth="1329.0" style="-fx-border-color: GREY; -fx-control-inner-background:#000000; -fx-font-family: FreeSans; -fx-highlight-fill: #00ff00; -fx-highlight-text-fill: White; -fx-text-fill: White;" />
+            <Button fx:id="KILL_BTN" layoutX="1283.0" layoutY="649.0" mnemonicParsing="false" onAction="#onKill" prefHeight="36.0" prefWidth="65.0" style="-fx-background-color: #ff0000;" text="Kill !" textFill="WHITE" >
+               <font>
+                  <Font name="DejaVu Sans Condensed Bold" size="13.0" />
+               </font>
+            </Button>
             </children>
         </AnchorPane>
     </children>

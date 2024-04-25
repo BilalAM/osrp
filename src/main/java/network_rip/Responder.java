@@ -1,5 +1,6 @@
 package network_rip;
 
+import gui.utils.CmdUtils;
 import network_v2.Router;
 import network_v2.Table;
 
@@ -21,14 +22,18 @@ public class Responder {
      */
     public void broadcastTables(Router router){
         try{
+
+          //  CmdUtils.getSharedRIPCMDBuilder().append("$- Attempting to contact other routers to send tables too...\n");
             System.out.println("\n attempting to contact other routers to send tables too...");
             if(isEmptyList(router)){
 
+              //  CmdUtils.getSharedRIPCMDBuilder().append("$- *** There Is No Router Currently Connected...\n");
                 System.out.println("***  There is no router currently connected ***");
             }
             for(Socket otherRouter : router.getConnectionHistory()) {
 
-                    System.out.println("connected router found...");
+            //    CmdUtils.getSharedRIPCMDBuilder().append("$- Connected Router Found !\n");
+                System.out.println("connected router found...");
                     sendTable(router,otherRouter);
             }
         }catch (Exception e){
@@ -45,14 +50,18 @@ public class Responder {
     public void recieveTables(Router router){
         try{
             if(isEmptyList(router)){
+               // CmdUtils.getSharedRIPCMDBuilder().append("$- *** There Is No Router Currently Connected *** !\n");
                 System.out.println("***  There is no router currently connected ***");
             }
             for (Socket otherRouter : router.getConnectionHistory()){
-                    System.out.println("connected router found....");
+
+               // CmdUtils.getSharedRIPCMDBuilder().append("$- Connected Router Found !\n");
+                System.out.println("connected router found....");
                     //rough estimate to check if there is any data available......very important check !
                     if (otherRouter.getInputStream().available() > 0) {
                        _recieveTables(otherRouter,router);
                     } else {
+                       // CmdUtils.getSharedRIPCMDBuilder().append("$- ROUTER HAVING IP  "+ otherRouter.getInetAddress() + " HAS NOT SENT TABLE AS OF YET...TRY AGAIN LATER..!\n");
                         System.out.println("ROUTER HAVING IP " + otherRouter.getInetAddress() + " HAS NOT SENT TABLE AS OF YET...TRY AGAIN LATER..!");
                     }
             }
@@ -69,15 +78,20 @@ public class Responder {
     private void _recieveTables(Socket otherRouter , Router selfRouter) throws Exception {
         Updater updater = new Updater();
         ObjectInputStream input = new ObjectInputStream(otherRouter.getInputStream());
+
+        CmdUtils.getSharedRIPCMDBuilder().append("$- Attempting To Receive Table From The Stream...\n");
         System.out.println("attempting to receive table from stream");
       //  if (input.readObject() instanceof Table) {
             Table t = (Table) input.readObject();
             tables.add(t);
-            System.out.println("a table is received and added to the inner list...");
+        CmdUtils.getSharedRIPCMDBuilder().append("$- A table Is Received And Added To The Inner List\n");
+        System.out.println("a table is received and added to the inner list...");
             t.displayTable();
-            System.out.println("ATTEMPTING TO UPDATE OUR TABLE...");
+        CmdUtils.getSharedRIPCMDBuilder().append("$- Attempting To UPDATE Our Table..\n");
+        System.out.println("ATTEMPTING TO UPDATE OUR TABLE...");
             updater.Update(selfRouter.getTable(), t);
-            System.out.println("OUR UPDATED TABLE WITH A NEW ENTRY....");
+        CmdUtils.getSharedRIPCMDBuilder().append("$- Our New Table With A UPDATED Entry\n");
+        System.out.println("OUR UPDATED TABLE WITH A NEW ENTRY....");
             selfRouter.getTable().displayTable();
             System.out.println("IS SOCKET CLOSED ? (WITH STREAM) ? " + otherRouter.isClosed());
       //  }
@@ -92,9 +106,11 @@ public class Responder {
      */
     private void sendTable(Router fromRouter , Socket toRouter) throws Exception{
         ObjectOutputStream outputStream = new ObjectOutputStream(toRouter.getOutputStream());
+        CmdUtils.getSharedRIPCMDBuilder().append("$- Attempting To Write A Table To The Stream..\n");
         System.out.println("attempting to write object to stream...");
         outputStream.writeUnshared(fromRouter.getTable());
         outputStream.flush();
+        CmdUtils.getSharedRIPCMDBuilder().append("$- Table Sent To The Stream..\n");
         System.out.println("table sent to stream...");
     }
 

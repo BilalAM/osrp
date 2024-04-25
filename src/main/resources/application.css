@@ -2,3 +2,6 @@
 button1{
 	-fx-alignment: top-left  ;
 }
+.tab-pane .tab-header-area .tab {
+-fx-pref-height: 150;
+-fx-pref-width: 50;}
