@@ -1,16 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.SideBarController">
+<BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1366.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.SideBarController">
    <top>
-      <AnchorPane prefHeight="54.0" prefWidth="600.0" style="-fx-background-color: GREY;" BorderPane.alignment="CENTER">
+      <AnchorPane prefHeight="54.0" prefWidth="600.0" style="-fx-background-color: #2c3e50;" BorderPane.alignment="CENTER">
          <children>
-            <Button layoutX="27.0" layoutY="14.0" mnemonicParsing="false" onMouseClicked="#ripUI" text="RIP Protocol Configuration" />
-            <Button layoutX="255.0" layoutY="14.0" mnemonicParsing="false" onMouseClicked="#osrpUI" text="OSRP Configuration" />
-            <Button layoutX="440.0" layoutY="14.0" mnemonicParsing="false" onMouseClicked="#benchmarkingUI" text="Benchmarking" />
+            <Label layoutX="14.0" layoutY="12.0" text="OSRP" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="22.0" />
+               </font>
+            </Label>
+            <HBox layoutX="120.0" layoutY="10.0" spacing="10.0">
+               <children>
+                  <Button mnemonicParsing="false" onMouseClicked="#ripUI" prefHeight="35.0" prefWidth="200.0" style="-fx-background-color: #3498db; -fx-cursor: hand;" text="RIP Protocol" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </Button>
+                  <Button mnemonicParsing="false" onMouseClicked="#osrpUI" prefHeight="35.0" prefWidth="200.0" style="-fx-background-color: #27ae60; -fx-cursor: hand;" text="OSRP Protocol" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </Button>
+                  <Button mnemonicParsing="false" onMouseClicked="#benchmarkingUI" prefHeight="35.0" prefWidth="200.0" style="-fx-background-color: #8e44ad; -fx-cursor: hand;" text="Benchmarking" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </Button>
+               </children>
+            </HBox>
          </children>
       </AnchorPane>
    </top>

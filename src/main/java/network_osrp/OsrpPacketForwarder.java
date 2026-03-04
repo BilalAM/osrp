@@ -1,50 +1,52 @@
 package network_osrp;
 
-import gui.utils.AssortedUtils;
-import gui.utils.GUIUtils;
-import network_packet_algorithms.OsrpPacketForwarderUtils;
-import network_v2.Packet;
+import network_core.NetworkConfig;
+import network_core.Packet;
+import network_core.PacketRoutingUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 public class OsrpPacketForwarder {
+    private static final Logger logger = LoggerFactory.getLogger(OsrpPacketForwarder.class);
 
 
 
     public boolean acceptHostConnection(OsrpRouter router){
         boolean check = true;
         try{
-            Socket _socket = router.getPacketSererSocket().accept();
+            Socket _socket = router.getPacketServerSocket().accept();
             if(_socket.getInputStream().available() > 0){
                 check = true;
                 ObjectInputStream inputStream = new ObjectInputStream(_socket.getInputStream());
                 Packet packet = (Packet)inputStream.readObject();
-                System.out.println("PACKET IS INITIALLY RECIEVED BY ROUTER !");
-                System.out.println(packet.toString());
-                System.out.println("THE SHORTEST COST ENTRY FOR THIS PACKET TO BE FORWARDED TOO...");
+                logger.debug("Packet is initially received by router");
+                logger.debug("Packet: {}", packet);
+                logger.debug("Finding the shortest cost entry for this packet to be forwarded to");
                 // get that entry
-                OsrpTable.Entry entry = OsrpPacketForwarderUtils.getShortestRankEntry(router.getRouterTable(),packet);
+                OsrpTable.Entry entry = PacketRoutingUtils.getShortestEntry(router.getRouterTable(), packet, java.util.Comparator.comparingInt(e -> e.NEXT_RANK));
                 // helper to send object via entry
                 if(entry == null){
-                    System.out.println("Destination reached or entry is null");
+                    logger.debug("Destination reached or entry is null");
                 }
-                else if(AssortedUtils.isOSRPDirectEntry(entry)){
+                else if(entry.isDirectEntry()){
                     entry.next = entry.destination;
-                    System.out.println(entry.toString());
+                    logger.debug("Direct entry: {}", entry);
                     send(_socket,packet,entry);
                 }
                 else {
-                    System.out.println(entry.toString());
+                    logger.debug("Entry: {}", entry);
                     send(_socket, packet, entry);
                 }
             }else{
                 check = false;
-                System.out.println("not gotten any packet :( ");
+                logger.debug("No packet received yet");
             }
         }catch(Exception e){
-            e.printStackTrace();
+            logger.error("Error accepting host connection for OSRP packet", e);
         }
         return check;
     }
@@ -55,29 +57,29 @@ public class OsrpPacketForwarder {
      */
     public void requestHostConnection(Packet packetToSend){
         try{
-            Socket _connection = new Socket(GUIUtils.getPrivateIp("wlxa0f3c12c7d2a"),3002);
+            Socket _connection = new Socket(NetworkConfig.getPrivateIp(), NetworkConfig.OSRP_PACKET_PORT);
             ObjectOutputStream outputStream = new ObjectOutputStream(_connection.getOutputStream());
             outputStream.writeUnshared(packetToSend);
             outputStream.flush();
             outputStream.close();
 
         }catch(Exception e){
-            e.printStackTrace();
+            logger.error("Error requesting host connection for OSRP packet", e);
         }
     }
 
-    public boolean recieveAndForwardThePacket(OsrpRouter selfRouter){
+    public boolean receiveAndForwardThePacket(OsrpRouter selfRouter){
     	boolean check = true;
         try{
         	check = true;
-            Socket _socket = selfRouter.getPacketSererSocket().accept();
+            Socket _socket = selfRouter.getPacketServerSocket().accept();
 
             ObjectInputStream inputStream = new ObjectInputStream(_socket.getInputStream());
             Packet packet = (Packet)inputStream.readObject();
-            OsrpTable.Entry entry = OsrpPacketForwarderUtils.getShortestRankEntry(selfRouter.getRouterTable(),packet);
+            OsrpTable.Entry entry = PacketRoutingUtils.getShortestEntry(selfRouter.getRouterTable(), packet, java.util.Comparator.comparingInt(e -> e.NEXT_RANK));
             if(entry == null){
-                System.out.println("destination is reached or is null");
-            }else if(AssortedUtils.isOSRPDirectEntry(entry)){
+                logger.debug("Destination is reached or entry is null");
+            }else if(entry.isDirectEntry()){
                 entry.next = entry.destination;
                 send(_socket,packet,entry);
             }else{
@@ -85,15 +87,15 @@ public class OsrpPacketForwarder {
             }
 
         }catch (Exception e){
-            e.printStackTrace();
+            logger.error("Error receiving and forwarding OSRP packet", e);
         }
         return check;
     }
 
 
     private void send(Socket socket, Packet packet, OsrpTable.Entry entry) throws Exception{
-        System.out.println(entry.toString());
-        Socket _socket = new Socket(entry.next,3002);
+        logger.debug("Forwarding packet via entry: {}", entry);
+        Socket _socket = new Socket(entry.next, NetworkConfig.OSRP_PACKET_PORT);
         ObjectOutputStream outputStream = new ObjectOutputStream(_socket.getOutputStream());
         outputStream.writeUnshared(packet);
         _socket.close();

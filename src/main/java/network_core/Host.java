@@ -1,12 +1,15 @@
-package network_v2;
+package network_core;
 
-import java.io.ObjectOutput;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Host {
+    private static final Logger logger = LoggerFactory.getLogger(Host.class);
 
     Socket hostSocket;
     private static StringBuilder hostCmD = new StringBuilder();
@@ -16,7 +19,7 @@ public class Host {
         try {
           //  hostServer = new ServerSocket(2001);
         }catch(Exception e){
-            e.printStackTrace();
+            logger.error("Failed to initialize host server socket", e);
         }
     }
 
@@ -29,7 +32,7 @@ public class Host {
 
 
         }catch(Exception e){
-            e.printStackTrace();
+            logger.error("Failed to connect host to router", e);
         }
     }
 
@@ -38,9 +41,9 @@ public class Host {
         try {
             ObjectOutputStream output = new ObjectOutputStream(hostSocket.getOutputStream());
             output.writeObject(packet);
-            System.out.println("a packet has been sent by the host to the router");
+            logger.debug("A packet has been sent by the host to the router");
         }catch(Exception e){
-            e.printStackTrace();
+            logger.error("Failed to send packet from host", e);
         }
 
 
@@ -50,7 +53,7 @@ public class Host {
         return hostCmD.toString();
     }
 
-    public void recievePacket(){
+    public void receivePacket(){
 
     }
 
