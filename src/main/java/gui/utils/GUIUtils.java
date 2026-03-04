@@ -1,5 +1,8 @@
 package gui.utils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.Enumeration;
@@ -10,11 +13,7 @@ import java.util.Enumeration;
  * @author bilalam
  */
 public class GUIUtils {
-
-    // testing
-    public static void main(String[] args) {
-        GUIUtils.getPrivateIp("wlo1");
-    }
+    private static final Logger logger = LoggerFactory.getLogger(GUIUtils.class);
 
     public static String getPrivateIp(String interfaceName) {
         String ip = "";
@@ -36,7 +35,7 @@ public class GUIUtils {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Failed to get private IP for interface {}", interfaceName, e);
         }
         return ip;
     }
@@ -47,7 +46,7 @@ public class GUIUtils {
             InetAddress local = InetAddress.getLocalHost();
             selfIp = local.getHostAddress();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Failed to get self IP", e);
         }
         return selfIp;
     }
@@ -63,7 +62,7 @@ public class GUIUtils {
             }
             return mac;
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Failed to get MAC address", e);
         }
         return mac;
     }

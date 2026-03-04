@@ -1,313 +1,194 @@
 package gui;
 
-import gui.utils.GUIUtils;
-import gui.utils.OsrpCmdUtils;
-import javafx.animation.Animation;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
+import gui.utils.CmdUtils;
 import javafx.application.Platform;
+import network_core.NetworkConfig;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
-import javafx.scene.text.TextFlow;
-import javafx.util.Duration;
-import network_osrp.HardwareBroadcaster;
+import javafx.scene.control.Button;
 import network_osrp.HardwareBroadcaster2;
 import network_osrp.OsrpPacketForwarder;
 import network_osrp.OsrpResponder;
 import network_osrp.OsrpRouter;
-import network_rip.PacketForwarder;
-import network_v2.Host;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.concurrent.atomic.AtomicInteger;
+import network_core.Host;
 
 import benchmarking.SharedBarCHART;
 
-public class OsrpController {
+public class OsrpController extends AbstractProtocolController {
 
-	private static OsrpRouter self = new OsrpRouter();
+	private OsrpRouter self = new OsrpRouter();
 	private OsrpResponder responder = new OsrpResponder();
-	private static Host selfHost = new Host();
+	private Host selfHost = new Host();
 	private OsrpPacketForwarder packetForwarder = new OsrpPacketForwarder();
-	private HardwareBroadcaster hardwareBroadcaster = new HardwareBroadcaster();
-	private boolean killCheck = false;
-
 	private HardwareBroadcaster2 broad2 = new HardwareBroadcaster2();
 
-	@FXML
-	private Button CONNECT_BUTTON = new Button();
+	@FXML private Button SEND_HARDWARE;
+	@FXML private Button UPDATE_HARDWARE;
 
-	@FXML
-	private Button ON_BUTTON = new Button();
-
-	@FXML
-	private Button UPDATE_BUTTON = new Button();
-
-	@FXML
-	private Button PACKET_BTN = new Button();
-
-	@FXML
-	private Button ON_HOST = new Button();
-
-	@FXML
-	private TextField REQUEST_IP = new TextField();
-
-	@FXML
-	private TextArea cmd = new TextArea();
-
-	@FXML
-	private ListView listView = new ListView();
-
-	@FXML
-	private TextArea ripCMD = new TextArea();
-
-	@FXML
-	private TextFlow richText;
-
-	@FXML
-	private TextArea hostCmd = new TextArea();
-
-	@FXML
-	private TextField DEST_IP = new TextField();
-
-	@FXML
-	private Button SEND_PCKT = new Button();
-
-	@FXML
-	private Label NAME = new Label();
-
-	@FXML
-	private Label STATUS = new Label();
-
-	@FXML
-	private Label IP = new Label();
-
-	@FXML
-	private Label UP_TIME = new Label();
-
-	// it is actually the memory consumption of JVM
-	@FXML
-	private Label MAC = new Label();
-
-	@FXML
-	private Label RAM = new Label();
-
-	@FXML
-	private TextField packets = new TextField();
-
-	@FXML
-	private Button KILL_BTN = new Button();
-
-	@FXML
-	private Button SEND_HARDWARE = new Button();
-
-	@FXML
-	private Button UPDATE_HARDWARE = new Button();
-
-	/**
-	 * A host is connecting to a router , default ip is 192.168.15.120
-	 */
-
-	// THE @FXML METHODS
 	@FXML
 	public void onRouter() {
-		System.out.println("OSRP ROUTER IS ON....WAITING FOR CONNECTIONS....");
-		// ON_HOST.disableProperty().setValue(true);
-		STATUS.setText("ON");
-		NAME.setText("CISCO XYZ 19-A");
-		IP.setText(GUIUtils.getPrivateIp("wlxa0f3c12c7d2a"));
+		if (self.isRunning()) {
+			cmd.setText("$- OSRP Router is already running\n");
+			return;
+		}
+		killCheck = false;
 
-		AtomicInteger _seconds = new AtomicInteger(0);
-		// Unsafe.getUnsafe().addressSize();
+		try {
+			self.initOsrp();
+		} catch (Exception e) {
+			logger.error("Failed to start OSRP router", e);
+			cmd.setText("$- FAILED to start OSRP router: " + e.getMessage() + "\n");
+			return;
+		}
 
-		Timeline clock = new Timeline(new KeyFrame(Duration.ZERO, e -> {
-			UP_TIME.setText(LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
-			RAM.setText(String.valueOf((float) (Runtime.getRuntime().freeMemory() / 1024) / 1024));
-			MAC.setText(String
-					.valueOf((float) (((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024)
-							/ 1024)));
+		logger.info("OSRP router is on, waiting for connections");
+		setLabelText(STATUS, "ON");
+		setLabelText(NAME, "OSRP Router");
+		setLabelText(IP, NetworkConfig.getPrivateIp());
+		startClock();
+		startDaemonThread(this::runAcceptConnectionTask);
 
-			// for line chart
-			// final float usagePercentage = (float) ((totalMemory / usageMemory) / 100);
-			/*
-			 * SharedRIPLineCHART.percentage = ((((Runtime.getRuntime().totalMemory() -
-			 * Runtime.getRuntime().freeMemory()) / 1024)) / 1024);
-			 * SharedRIPLineCHART.seconds = _seconds;
-			 * SharedRIPLineCHART.addEntry(SharedRIPLineCHART.seconds.getAndIncrement(),
-			 * SharedRIPLineCHART.percentage);
-			 */
-		}), new KeyFrame(Duration.seconds(1.2)));
-		clock.setCycleCount(Animation.INDEFINITE);
-		clock.play();
-
-		startAcceptConnectionTask();
+		cmd.setText("$- OSRP Router started on ports " + NetworkConfig.OSRP_ROUTER_PORT
+				+ ", " + NetworkConfig.OSRP_HOST_PORT + ", " + NetworkConfig.OSRP_PACKET_PORT
+				+ ", " + NetworkConfig.OSRP_HARDWARE_PORT + "\n"
+				+ "$- Waiting for connections...\n");
 	}
 
 	@FXML
 	public void requestRouterConnection() {
-		self.requestConnection(REQUEST_IP.getText());
-		cmd.setText(OsrpCmdUtils.getSharedRoutingCMDBuilder().toString());
-
+		String targetIp = REQUEST_IP.getText();
+		if (targetIp == null || targetIp.trim().isEmpty()) {
+			cmd.setText("$- Please enter an IP address\n");
+			return;
+		}
+		if (!self.isRunning()) {
+			cmd.setText("$- Router is not running. Click 'On' first.\n");
+			return;
+		}
+		cmd.setText("$- Connecting to " + targetIp + "...\n");
+		startDaemonThread(() -> {
+			self.requestConnection(targetIp.trim());
+			Platform.runLater(() -> {
+				String routing = CmdUtils.osrpInstance().getRoutingCMDBuilder().toString();
+				String cmdText = CmdUtils.osrpInstance().getCMDBuilder().toString();
+				cmd.setText(cmdText + "\n" + routing);
+			});
+		});
 	}
 
 	@FXML
-	public void recieveTheTables() {
-		startRecieveTablesTask();
+	public void receiveTheTables() {
+		if (!self.isRunning()) return;
+		startDaemonThread(this::runReceiveTablesTask);
 	}
 
 	@FXML
 	public void sendTheTables() {
-		// Responder responder = new Responder();
-		responder.broadcastTables(self);
+		if (!self.isRunning()) return;
+		startDaemonThread(() -> {
+			responder.broadcastTables(self);
+			Platform.runLater(() -> cmd.setText(CmdUtils.osrpInstance().getCMDBuilder().toString()));
+		});
 	}
 
 	@FXML
 	private void sendHardwareInfo() {
-			//startSendingHardwareTask();
-				broad2.broadCastInfo(self);
-
+		if (!self.isRunning()) return;
+		startDaemonThread(() -> broad2.broadCastInfo(self));
 	}
 
 	@FXML
 	public void listenPackets() {
-		startListenPacketTask();
+		if (!self.isRunning()) {
+			cmd.setText("$- Router is not running. Click 'On' first.\n");
+			return;
+		}
+		startDaemonThread(this::runListenPacketTask);
 	}
 
 	@FXML
 	private void updateHardwareInfo() {
-		startUpdatingHardwareTask();
+		if (!self.isRunning()) return;
+		startDaemonThread(this::runUpdatingHardwareTask);
 	}
 
-	// IMPLEMENTATION OF THE MULTITHREADED METHODS
+	@FXML
+	public void onKill() {
+		killCheck = true;
+		stopClock();
+		self.shutdown();
 
-	public void startListenPacketTask() {
-		Runnable runn = () -> runListenPacketTask();
-		Thread thread = new Thread(runn);
-		thread.setDaemon(true);
-		thread.start();
+		CmdUtils.osrpInstance().getCMDBuilder().setLength(0);
+		CmdUtils.osrpInstance().getRoutingCMDBuilder().setLength(0);
+		CmdUtils.osrpInstance().getRIPCMDBuilder().setLength(0);
+
+		if (ON_HOST != null) ON_HOST.setDisable(false);
+		if (UPDATE_BUTTON != null) UPDATE_BUTTON.setDisable(false);
+		if (listView != null) listView.getItems().clear();
+		if (cmd != null) cmd.setText("$- OSRP Router is OFF\n");
+
+		setLabelText(STATUS, "OFF");
+		setLabelText(NAME, "--");
+		setLabelText(IP, "--");
+		setLabelText(UP_TIME, "--");
+		setLabelText(RAM, "--");
+		setLabelText(MAC, "--");
+
+		logger.info("OSRP Router shut down");
 	}
 
-	public void runListenPacketTask() {
+	// --- Background tasks ---
 
+	private void runListenPacketTask() {
 		SharedBarCHART.numberOfPacketReceivedByRouter = 0;
 		SharedBarCHART.numberOfPacketSentByRouter = 0;
-		long tempReceiveSecond = System.nanoTime();
-		long tempSentSeconds = System.nanoTime();
-		boolean packetCheck = true;
 
-		while (true) {
-			if (killCheck == false) {
-				try {
-					// Thread.sleep(100);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				if (packetForwarder.recieveAndForwardThePacket(self)) {
-					packetCheck = true;
-					SharedBarCHART.numberOfPacketReceivedByRouter++;
-					SharedBarCHART.numberOfPacketSentByRouter++;
-
-				}
-				Platform.runLater(() -> {
-					cmd.setText("hello love :)");
-				});
-			} else {
-				break;
+		while (!killCheck && self.isRunning()) {
+			if (packetForwarder.receiveAndForwardThePacket(self)) {
+				SharedBarCHART.numberOfPacketReceivedByRouter++;
+				SharedBarCHART.numberOfPacketSentByRouter++;
 			}
 		}
-
-	}
-
-	private void startUpdatingHardwareTask() {
-		Runnable runnable = () -> runUpdatingHardwareTask();
-		Thread thread = new Thread(runnable);
-		thread.setDaemon(true);
-		thread.start();
 	}
 
 	private void runUpdatingHardwareTask() {
-		while (true) {
+		while (!killCheck && self.isRunning()) {
 			try {
 				Thread.sleep(1000);
-				broad2.recieveInfo(self);
-				Platform.runLater(() -> {
-					// gui here
-				});
+				broad2.receiveInfo(self);
 			} catch (Exception e) {
-				e.printStackTrace();
+				if (self.isRunning()) {
+					logger.error("Error updating hardware info", e);
+				}
 			}
 		}
 	}
 
-	private void startSendingHardwareTask() {
-		Runnable runTask = () -> runSendingHardwareTask();
-		Thread thread = new Thread(runTask);
-		thread.setDaemon(true);
-		thread.start();
-	}
-
-	private void runSendingHardwareTask() {
-		//for (int i = 0; i < 2; i++) {
+	private void runReceiveTablesTask() {
+		while (!killCheck && self.isRunning()) {
 			try {
-				//Thread.sleep(1000);
-				// hardwareBroadcaster.broadcastHardwareInformation(self);
-				broad2.broadCastInfo(self);
-				Platform.runLater(() -> {
-					// gui here
-				});
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		//}
-	}
-
-
-	private void startRecieveTablesTask() {
-		Runnable runTask = () -> runRecieveTablesTask();
-		Thread thread = new Thread(runTask);
-		thread.setDaemon(true);
-		thread.start();
-	}
-
-	private void runRecieveTablesTask() {
-		while (true) {
-			if (killCheck == false) {
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-				responder.recieveTables(self);
-				Platform.runLater(() -> {
-					// listView.getItems().clear();
-					// listView.getItems().add(CmdUtils.getSharedRIPCMDBuilder().toString());
-				});
-			} else {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
 				break;
 			}
+			responder.receiveTables(self);
 		}
-	}
-
-	private void startAcceptConnectionTask() {
-		Runnable runTask = () -> runAcceptConnectionTask();
-		Thread acceptThread = new Thread(runTask);
-		acceptThread.setDaemon(true);
-		acceptThread.start();
 	}
 
 	private void runAcceptConnectionTask() {
-		while (true) {
+		while (!killCheck && self.isRunning()) {
 			try {
 				self.acceptConnections();
 				Platform.runLater(() -> {
-					cmd.setText(OsrpCmdUtils.getSharedRoutingCMDBuilder().toString());
-
+					String routing = CmdUtils.osrpInstance().getRoutingCMDBuilder().toString();
+					String cmdText = CmdUtils.osrpInstance().getCMDBuilder().toString();
+					cmd.setText(cmdText + "\n" + routing);
 				});
 			} catch (Exception e) {
-				e.printStackTrace();
+				if (self.isRunning()) {
+					logger.error("Error accepting OSRP connection", e);
+				}
 			}
 		}
 	}
-
 }
