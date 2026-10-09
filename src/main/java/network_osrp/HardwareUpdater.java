@@ -1,22 +1,25 @@
 package network_osrp;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
 
 public class HardwareUpdater {
+    private static final Logger logger = LoggerFactory.getLogger(HardwareUpdater.class);
 
-    public void updateTable(HardwarePollerPacket recievedPoller, OsrpTable toUpdate) throws Exception{
+    public void updateTable(HardwarePollerPacket receivedPoller, OsrpTable toUpdate) throws Exception{
         for (OsrpTable.Entry entry : toUpdate.getEntries()) {
-            if(isDirectEntry(entry , recievedPoller)){
-                entry.NEXT_RANK = HardwareRanks.getRank(recievedPoller);
-                System.out.println("updated entry --> " + entry.toString());
+            if(isDirectEntry(entry , receivedPoller)){
+                entry.NEXT_RANK = HardwareRanks.getRank(receivedPoller);
+                logger.debug("Updated direct entry: {}", entry);
                 continue;
-            }else if(isIndirectEntry(entry,recievedPoller)){
-                System.out.println("updated entry --> " + entry.toString());
-                entry.NEXT_RANK = HardwareRanks.getRank(recievedPoller);
+            }else if(isIndirectEntry(entry,receivedPoller)){
+                logger.debug("Updated indirect entry: {}", entry);
+                entry.NEXT_RANK = HardwareRanks.getRank(receivedPoller);
                 continue;
             }else{
-                System.out.println("no changes due to the hardware packet detected...");
+                logger.debug("No changes due to the hardware packet detected");
                 continue;
             }
         }

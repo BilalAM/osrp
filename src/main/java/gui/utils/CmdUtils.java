@@ -1,22 +1,31 @@
 package gui.utils;
 
 public class CmdUtils {
-    private static StringBuilder sharedCMDBuilder = new StringBuilder();
-    private static StringBuilder sharedRoutingCMDBuilder = new StringBuilder();
-    private static StringBuilder sharedRIPCMDBuilder = new StringBuilder();
+    private final StringBuilder sharedCMDBuilder = new StringBuilder();
+    private final StringBuilder sharedRoutingCMDBuilder = new StringBuilder();
+    private final StringBuilder sharedRIPCMDBuilder = new StringBuilder();
 
-    private CmdUtils(){
+    private static final CmdUtils RIP_INSTANCE = new CmdUtils();
+    private static final CmdUtils OSRP_INSTANCE = new CmdUtils();
 
-    }
-    public static StringBuilder getSharedCMDBuilder(){
-        return sharedCMDBuilder;
+    public static CmdUtils ripInstance() { return RIP_INSTANCE; }
+    public static CmdUtils osrpInstance() { return OSRP_INSTANCE; }
+
+    // Static methods delegate to RIP instance (backward compatibility for existing RIP code)
+    public static StringBuilder getSharedCMDBuilder() {
+        return RIP_INSTANCE.sharedCMDBuilder;
     }
 
     public static StringBuilder getSharedRIPCMDBuilder() {
-        return sharedRIPCMDBuilder;
+        return RIP_INSTANCE.sharedRIPCMDBuilder;
     }
 
     public static StringBuilder getSharedRoutingCMDBuilder() {
-        return sharedRoutingCMDBuilder;
+        return RIP_INSTANCE.sharedRoutingCMDBuilder;
     }
+
+    // Instance methods for protocol-specific access
+    public StringBuilder getCMDBuilder() { return sharedCMDBuilder; }
+    public StringBuilder getRIPCMDBuilder() { return sharedRIPCMDBuilder; }
+    public StringBuilder getRoutingCMDBuilder() { return sharedRoutingCMDBuilder; }
 }

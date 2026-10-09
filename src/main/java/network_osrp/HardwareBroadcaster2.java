@@ -1,7 +1,9 @@
 package network_osrp;
 
-import gui.utils.GUIUtils;
 import gui.utils.OsrpHardwareUtilities;
+import network_core.NetworkConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -9,11 +11,12 @@ import java.net.InetAddress;
 import java.net.Socket;
 
 public class HardwareBroadcaster2 {
+	private static final Logger logger = LoggerFactory.getLogger(HardwareBroadcaster2.class);
 
 	public void broadCastInfo(OsrpRouter selfRouter) {
 		try {
 			if (selfRouter.getHardwareList().isEmpty()) {
-				System.out.println("list to send pollers to is empty currently/...");
+				logger.debug("Hardware list to send pollers to is empty currently");
 			} else {
 				for (Socket socket : selfRouter.getHardwareList()) {
 					//Socket _socket = new Socket(socket.getInetAddress(), 3003);
@@ -26,7 +29,7 @@ public class HardwareBroadcaster2 {
 		}
 	}
 
-	public void recieveInfo(OsrpRouter router) {
+	public void receiveInfo(OsrpRouter router) {
 		try {
 			if(router.getHardwareList().isEmpty()){
 
@@ -35,11 +38,11 @@ public class HardwareBroadcaster2 {
 				if(_socket.getInputStream().available() > 0){
 					HardwareUpdater updater = new HardwareUpdater();
 				//	Socket socket = router.getPollerServerSocket().accept();
-					System.out.println("recieved a poller connection");
+					logger.debug("Received a poller connection");
 					ObjectInputStream inputStream = new ObjectInputStream(_socket.getInputStream());
 					HardwarePollerPacket pollerPacket = (HardwarePollerPacket) inputStream.readObject();
 					updater.updateTable(pollerPacket, router.getRouterTable());
-						System.out.println("OUR UPDATING TABLE WITH NEW ENTRY..IF IT IS");
+						logger.debug("Updating table with new entry if applicable");
 						router.getRouterTable().displayTable();
 				//	socket.close();
 				}else {
@@ -52,7 +55,7 @@ public class HardwareBroadcaster2 {
 
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Error receiving hardware info", e);
 		}
 	}
 
@@ -60,15 +63,14 @@ public class HardwareBroadcaster2 {
 		try {
 			HardwarePollerPacket hardwarePollerPacket = new HardwarePollerPacket(
 					OsrpHardwareUtilities.getRamUtilization(), OsrpHardwareUtilities.getCpuUtilization(),
-					InetAddress.getByName(GUIUtils.getPrivateIp("wlxa0f3c12c7d2a")));
-			System.out.println("SENDING POLLER PACKET AS : ");
-			System.out.println(hardwarePollerPacket.toString());
+					InetAddress.getByName(NetworkConfig.getPrivateIp()));
+			logger.debug("Sending poller packet: {}", hardwarePollerPacket);
 			ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
 			outputStream.writeUnshared(hardwarePollerPacket);
 			outputStream.flush();
 			//outputStream.close();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Error broadcasting hardware info", e);
 		}
 	}
 

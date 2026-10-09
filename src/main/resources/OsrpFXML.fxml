@@ -63,6 +63,18 @@
 										<Font name="DejaVu Sans Condensed Bold" size="14.0" />
 									</font>
 								</Label>
+								<Label layoutX="6.0" layoutY="-17.0" prefHeight="21.0"
+									prefWidth="65.0" text="Name">
+									<font>
+										<Font name="DejaVu Sans Condensed Bold" size="14.0" />
+									</font>
+								</Label>
+								<Label fx:id="NAME" layoutX="170.0" layoutY="-12.0" text="--"
+									textFill="RED">
+									<font>
+										<Font name="DejaVu Sans Condensed" size="17.0" />
+									</font>
+								</Label>
 								<Label fx:id="STATUS" layoutX="170.0" layoutY="11.0" text="--"
 									textFill="RED">
 									<font>
@@ -158,7 +170,7 @@
 					</font>
 				</Button>
 				<Button fx:id="UPDATE_BUTTON" layoutX="18.0" layoutY="479.0"
-					mnemonicParsing="false" onAction="#recieveTheTables" prefHeight="40.0"
+					mnemonicParsing="false" onAction="#receiveTheTables" prefHeight="40.0"
 					prefWidth="248.0" style="-fx-background-color: #4CAF50;" text="UPDATE TABLE"
 					textFill="WHITE">
 					<font>
@@ -227,7 +239,7 @@
 					minWidth="-Infinity" prefHeight="224.0" prefWidth="1003.0"
 					style="-fx-border-color: GREY; -fx-control-inner-background:#000000; -fx-font-family: FreeSans; -fx-highlight-fill: #00ff00; -fx-highlight-text-fill: White; -fx-text-fill: White;" />
 				<Button fx:id="KILL_BTN" layoutX="1297.0" layoutY="620.0"
-					mnemonicParsing="false" prefHeight="36.0" prefWidth="65.0"
+					mnemonicParsing="false" onAction="#onKill" prefHeight="36.0" prefWidth="65.0"
 					style="-fx-background-color: #ff0000;" text="Kill !" textFill="WHITE">
 					<font>
 						<Font name="DejaVu Sans Condensed Bold" size="13.0" />

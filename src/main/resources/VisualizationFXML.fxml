@@ -30,7 +30,7 @@
             </BarChart>
             <Label layoutX="36.0" layoutY="205.0" rotate="-90.0" text="PACKETS" />
             <Label layoutX="670.0" layoutY="205.0" rotate="-90.0" text="PACKETS" />
-            <LineChart fx:id="myChart3" layoutX="199.0" layoutY="400.0" prefHeight="274.0" prefWidth="913.0" title="Memor Consumption Of Router ( In Megabytes)">
+            <LineChart fx:id="myChart3" layoutX="199.0" layoutY="400.0" prefHeight="274.0" prefWidth="913.0" title="Memory Consumption Of Router ( In Megabytes)">
               <xAxis>
                 <CategoryAxis side="BOTTOM" />
               </xAxis>

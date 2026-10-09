@@ -1,29 +1,31 @@
 package network_rip;
 
-import gui.utils.AssortedUtils;
 import gui.utils.CmdUtils;
-import gui.utils.GUIUtils;
-import network_packet_algorithms.PacketForwarderUtils;
-import network_v2.Packet;
+import network_core.NetworkConfig;
+import network_core.Packet;
+import network_core.PacketRoutingUtils;
 import network_v2.Router;
 import network_v2.Table;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 public class PacketForwarder {
+	private static final Logger logger = LoggerFactory.getLogger(PacketForwarder.class);
 
 	/**
-	 * accept host connection and also recieve the packet
+	 * accept host connection and also receive the packet
 	 *
 	 * - THIS IS THE "INITIAL" STEP TAKEN BY THE ROUTER THAT IS "DIRECTLY" CONNECTED
 	 * TO A HOST
-	 * 
-	 * - The Actual Send And Recieve Packets By Routers Are Implemented In Different
+	 *
+	 * - The Actual Send And Receive Packets By Routers Are Implemented In Different
 	 * Functions.
 	 *
-	 * - THIS ONLY ACCEPTS AND FORWARDES THE PACKET RECIEVED INITIALLY BY THE HOST
+	 * - THIS ONLY ACCEPTS AND FORWARDS THE PACKET RECEIVED INITIALLY BY THE HOST
 	 * THAT IS DIRECTLY CONNECTED TO THIS ROUTER !
 	 *
 	 */
@@ -32,7 +34,7 @@ public class PacketForwarder {
 		StringBuilder builder = new StringBuilder("a");
 		try {
 			Socket host = router.getHostServerSocket().accept();
-			System.out.println("ROUTER IS CONNECTED TO A HOST");
+			logger.info("Router is connected to a host");
 
 			CmdUtils.getSharedCMDBuilder().append("$- A Router Is Connected To A Host !! \n");
 
@@ -40,20 +42,20 @@ public class PacketForwarder {
 				ObjectInputStream inputFromHost = new ObjectInputStream(host.getInputStream());
 				Packet packet = (Packet) inputFromHost.readObject();
 				check = true;
-				System.out.println("PACKET IS INITIALLY RECIEVED BY ROUTER !");
-				System.out.println(packet.toString());
-				System.out.println("THE SHORTEST COST ENTRY FOR THIS PACKET TO BE FORWARDED TOO...");
+				logger.debug("Packet initially received by router");
+				logger.debug("Packet: {}", packet);
+				logger.debug("Finding the shortest cost entry for this packet to be forwarded to");
 
-				Table.Entry entry = PacketForwarderUtils.getShortestFirstEntry(router.getTable(), packet);
+				Table.Entry entry = PacketRoutingUtils.getShortestEntry(router.getTable(), packet, java.util.Comparator.comparingInt(e -> e.cost));
 
 				CmdUtils.getSharedCMDBuilder().append("$- Router Has Received A Packet By Host.. \n");
 				CmdUtils.getSharedCMDBuilder().append(packet.toString());
 
 				if (entry == null) {
-					System.out.println("Destination reached or entry is null");
+					logger.debug("Destination reached or entry is null");
 					CmdUtils.getSharedCMDBuilder().append("$- Destination Has Been Reached ! Entry Is Null Now ! \n");
 
-				} else if (AssortedUtils.isDirectEntry(entry)) {
+				} else if (entry.isDirectEntry()) {
 					entry.next = entry.destination;
 
 					CmdUtils.getSharedCMDBuilder().append(
@@ -73,10 +75,10 @@ public class PacketForwarder {
 				}
 			} else {
 				check = false;
-				System.out.println("host has not sent any packet as of yet , but thats impossbile.");
+				logger.debug("Host has not sent any packet yet");
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Error accepting host connection for RIP packet", e);
 		}
 		return check;
 	}
@@ -84,12 +86,12 @@ public class PacketForwarder {
 	public void requestHostConnection(Packet packetToSend) {
 
 		try {
-			Socket socket = new Socket(GUIUtils.getPrivateIp("wlxa0f3c12c7d2a"), 2001);
+			Socket socket = new Socket(NetworkConfig.getPrivateIp(), NetworkConfig.RIP_HOST_PORT);
 			ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
 			outputStream.writeObject(packetToSend);
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Error requesting host connection for RIP packet", e);
 		}
 	}
 
@@ -140,7 +142,7 @@ public class PacketForwarder {
 		try {
 
 			// Thread.sleep(1000);
-			Socket socket = router.getPacketSererSocket().accept();
+			Socket socket = router.getPacketServerSocket().accept();
 			// cmdBuilder.append("$- Connection Received For Packet..\n");
 
 			CmdUtils.getSharedCMDBuilder().append("$- Connection Received For Packet..\n");
@@ -159,7 +161,7 @@ public class PacketForwarder {
 			CmdUtils.getSharedCMDBuilder().append(
 					"$- Packet Received...Trying To Extract The Shortest Entry From Packet And Checking Our Table For Shortest Entry...\n ");
 
-			Table.Entry entry = PacketForwarderUtils.getShortestFirstEntry(router.getTable(), packet);
+			Table.Entry entry = PacketRoutingUtils.getShortestEntry(router.getTable(), packet, java.util.Comparator.comparingInt(e -> e.cost));
 			CmdUtils.getSharedCMDBuilder().append("$- Entry Extracted...Checking further..\n");
 
 			if (entry == null) {
@@ -167,7 +169,7 @@ public class PacketForwarder {
 						"$- ****  DESTINATION HAS BEEN REACHED ! OR A NULL ENTRY IS HERE.. GOING BACK TO LISTENING ***\n");
 
 				builder.append("DESTINATION REACHED OR NULL IS HERE..");
-			} else if (AssortedUtils.isDirectEntry(entry)) {
+			} else if (entry.isDirectEntry()) {
 				CmdUtils.getSharedCMDBuilder()
 						.append("$- It Is A Direct Entry.. Changing The Next To Destination IP..\n");
 
@@ -179,10 +181,10 @@ public class PacketForwarder {
 				helper(socket, entry, builder, packet);
 			}
 
-			System.out.println(builder.toString());
+			logger.debug("{}", builder);
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Error receiving and forwarding RIP packet", e);
 
 		}
 		return check;
@@ -194,7 +196,7 @@ public class PacketForwarder {
 
 		CmdUtils.getSharedCMDBuilder().append("$- Attempting To Open A New Connection To " + entry.next + "\n");
 
-		Socket _socket = new Socket(entry.next, 2002);
+		Socket _socket = new Socket(entry.next, NetworkConfig.RIP_PACKET_PORT);
 
 		CmdUtils.getSharedCMDBuilder().append("$- Connection Success !! \n");
 		CmdUtils.getSharedCMDBuilder().append("$- Forwarding The Packet To This New Router..\n");

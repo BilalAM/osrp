@@ -1,4 +1,4 @@
-package network_v2;
+package network_core;
 import java.io.Serializable;
 import java.net.InetAddress;
 import java.util.Date;

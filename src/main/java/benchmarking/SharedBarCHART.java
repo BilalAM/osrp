@@ -19,7 +19,7 @@ public class SharedBarCHART {
     public static ObservableMap<Double,Integer> observableSMap = FXCollections.observableMap(Smap);
 
 
-    public static void addRecieveData(int packets , double seconds){
+    public static void addReceiveData(int packets , double seconds){
         observableRMap.put(seconds,packets);
         Rmap.put(seconds,packets);
     }
